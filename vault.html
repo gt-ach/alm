@@ -20,7 +20,8 @@ body{margin:0;background:#fff;color:var(--ink);overflow:hidden;
   font-weight:400;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 .wrap{height:100vh;height:100dvh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;
-  padding-top:var(--sat);padding-bottom:calc(var(--sab) + 10px);overflow:hidden}
+  padding-top:var(--sat);padding-bottom:calc(var(--sab) + 10px);overflow:hidden;
+  background:#fff;position:relative;z-index:1}
 
 .head{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:10px 18px 0}
 .burger{width:26px;height:18px;display:flex;flex-direction:column;justify-content:space-between;flex:0 0 auto;padding:0}
@@ -35,49 +36,54 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .dial{flex:1 1 auto;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}
 #svg{width:100%;height:100%;display:block}
 .seg{cursor:pointer}
-.lbl{font-size:12.5px;font-weight:600;fill:#fff;letter-spacing:-.005em}
-.lamt{font-size:10.5px;font-weight:500;fill:rgba(255,255,255,.86);font-variant-numeric:tabular-nums}
-.eyeb{font-size:10.5px;font-weight:600;letter-spacing:.16em;fill:var(--green)}
+.lbl{font-size:13.5px;font-weight:600;fill:#fff;letter-spacing:-.005em}
+.lamt{font-size:11.5px;font-weight:500;fill:rgba(255,255,255,.86);font-variant-numeric:tabular-nums}
+.eyeb{font-size:11.5px;font-weight:600;letter-spacing:.16em;fill:var(--green)}
 .hero{font-size:46px;font-weight:500;letter-spacing:-.05em;fill:var(--ink)}
-.heroU{font-size:13px;font-weight:400;fill:var(--sub);letter-spacing:-.01em}
-.sub1{font-size:11px;fill:var(--mut)}
-.tick{font-size:9px;fill:var(--faint);letter-spacing:.1em}
+.heroU{font-size:14px;font-weight:400;fill:var(--sub);letter-spacing:-.01em}
+.sub1{font-size:12px;fill:var(--mut)}
+.tick{font-size:10px;fill:var(--faint);letter-spacing:.1em}
 
 /* actions */
 .lens{flex:0 0 auto;display:flex;gap:6px;padding:2px 20px 0}
-.lens button{flex:1;padding:9px 0;border-radius:11px;font-size:13px;color:var(--sub);border:1px solid var(--line);
+.lens button{flex:1;padding:9px 0;border-radius:11px;font-size:14px;color:var(--sub);border:1px solid var(--line);
   transition:.2s background,.2s color,.2s border-color}
 .lens button.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:500}
 
 .chipwrap{flex:0 0 auto;padding:12px 20px 0}
-.chiplab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+.chiplab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:baseline;gap:5px;padding:6px 10px;border-radius:999px;font-size:12px;
+.chip{display:inline-flex;align-items:baseline;gap:5px;padding:6px 10px;border-radius:999px;font-size:13px;
   border:1px solid var(--indigo-line);background:var(--indigo-soft);color:var(--indigo);transition:.2s all}
-.chip .amt{font-size:11px;opacity:.72;font-variant-numeric:tabular-nums}
+.chip .amt{font-size:12px;opacity:.72;font-variant-numeric:tabular-nums}
 .chip.keep{background:var(--green-soft);border-color:var(--green-line);color:var(--green-ink)}
 .chip.out{background:#fff;border-color:var(--line);color:var(--faint)}
 .chip.out .amt{text-decoration:line-through}
 
-.bar{flex:0 0 auto;margin:12px 16px 0;border:1px solid var(--line);border-radius:17px;padding:12px 8px;
-  display:flex;align-items:center;gap:4px;background:#fff}
-.arw{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
-.arw:active{background:var(--indigo-soft)}
-.bar .mid{flex:1;min-width:0;text-align:center;overflow:hidden}
-.orow{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:5px}
-.rank{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
-.fitpill{font-size:10.5px;font-weight:600;color:var(--indigo);background:var(--indigo-soft);
-  border:1px solid var(--indigo-line);border-radius:999px;padding:2px 9px;letter-spacing:.01em}
-.bar .mid .n1{font-size:17px;font-weight:500;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar .mid .n2{font-size:11.5px;color:var(--sub);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.omet{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:9px;padding-top:9px;border-top:1px solid var(--hair)}
-.omet span{font-size:9.5px;color:var(--mut);line-height:1.25;display:block}
-.omet b{display:block;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bar{flex:0 0 auto;margin:14px 16px 0;border:1px solid var(--line);border-radius:18px;padding:14px 16px 15px;background:#fff}
+.bar .mid{min-width:0;overflow:hidden}
+.otop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.oleft{min-width:0;flex:1}
+.oright{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;padding-top:1px}
+.rank{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.fitpill{font-size:11.5px;font-weight:600;color:var(--indigo);background:var(--indigo-soft);
+  border:1px solid var(--indigo-line);border-radius:999px;padding:3px 10px;letter-spacing:.01em}
+.bar .mid .n1{font-size:20px;font-weight:500;letter-spacing:-.025em;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .mid .n2{font-size:13px;color:var(--sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.omet{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:15px}
+.omet span{font-size:10.5px;color:var(--mut);line-height:1.3;display:block;letter-spacing:.02em}
+.omet b{display:block;font-size:16px;font-weight:500;color:var(--ink);letter-spacing:-.025em;
+  font-variant-numeric:tabular-nums;margin-bottom:1px}
 .bar.flip .mid{animation:fl .34s cubic-bezier(.2,.8,.2,1)}
 @keyframes fl{0%{opacity:0;transform:translateX(var(--fx,14px))}100%{opacity:1;transform:none}}
-.pips{display:flex;gap:3px;justify-content:center;padding:6px 0 0}
-.pips button{padding:7px 1px;background:none;border:0;cursor:pointer}
-.pips button i{display:block;width:16px;height:3px;border-radius:2px;background:#DFE1E8;transition:.28s}
+
+.nav{flex:0 0 auto;display:flex;align-items:center;gap:10px;margin:10px 16px 0}
+.arw{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto;background:#fff}
+.arw:active{background:var(--indigo-soft)}
+.pips{flex:1;display:flex;gap:3px;justify-content:center}
+.pips button{padding:9px 1px;background:none;border:0;cursor:pointer}
+.pips button i{display:block;width:15px;height:3px;border-radius:2px;background:#DFE1E8;transition:.28s}
 .pips button.on i{background:var(--indigo);width:24px}
 .pips button:active i{background:var(--indigo-line)}
 
@@ -90,13 +96,14 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .scrim{position:fixed;inset:0;background:rgba(18,20,42,.42);opacity:0;pointer-events:none;transition:.28s;z-index:40}
 .scrim.open{opacity:1;pointer-events:auto}
 .sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,104%);width:min(480px,100%);z-index:50;visibility:hidden;
-  background:#fff;border-radius:22px 22px 0 0;padding:8px 20px calc(var(--sab) + 20px);box-shadow:none;
+  background:#fff;border-radius:22px 22px 0 0;padding:8px 20px calc(var(--sab) + 20px);
+  box-shadow:none;filter:none;border-top:1px solid var(--line);
   transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s linear .34s;max-height:84dvh;overflow-y:auto}
-.sheet.open{transform:translate(-50%,0);visibility:visible;box-shadow:0 -8px 34px rgba(18,20,42,.18);
+.sheet.open{transform:translate(-50%,0);visibility:visible;
   transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s}
 .grab{width:36px;height:4px;border-radius:2px;background:#DADCE2;margin:6px auto 14px}
 .sheet h3{margin:0 0 3px;font-size:18px;font-weight:500}
-.sheet p{margin:0 0 12px;font-size:13.5px;color:var(--sub);line-height:1.45}
+.sheet p{margin:0 0 12px;font-size:14.5px;color:var(--sub);line-height:1.45}
 .line{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
 .line:last-of-type{border-bottom:0}.line .k{color:var(--sub)}
 .done{width:100%;margin-top:14px;height:52px;border-radius:15px;background:var(--indigo);color:#fff;font-size:16.5px;font-weight:600}
@@ -144,27 +151,34 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   </div>
 
   <div class="bar" id="bar">
-    <button class="arw" id="prev" aria-label="Previous offer">
-      <svg width="12" height="12" viewBox="0 0 16 16"><path d="M10.5 2 5 8l5.5 6" stroke="#666C80" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
     <div class="mid">
-      <div class="orow">
-        <span class="rank" id="oRank">1 of 9</span>
-        <span class="fitpill" id="oFit">SmartFit 98</span>
+      <div class="otop">
+        <div class="oleft">
+          <div class="n1" id="oName">Achieve home loan</div>
+          <div class="n2" id="oSub">10-year fixed · 9.2% fixed</div>
+        </div>
+        <div class="oright">
+          <span class="fitpill" id="oFit">SmartFit 98</span>
+          <span class="rank" id="oRank">1 of 9</span>
+        </div>
       </div>
-      <div class="n1" id="oName">Achieve home loan</div>
-      <div class="n2" id="oSub">10-year fixed · 9.2% fixed</div>
       <div class="omet">
         <span><b id="mPay">$1,493</b>per month</span>
         <span><b id="mCost">$22,892</b>total interest</span>
         <span><b id="mTime">14 yr</b>debt-free</span>
       </div>
     </div>
+  </div>
+
+  <div class="nav">
+    <button class="arw" id="prev" aria-label="Previous offer">
+      <svg width="12" height="12" viewBox="0 0 16 16"><path d="M10.5 2 5 8l5.5 6" stroke="#666C80" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="pips" id="pips"></div>
     <button class="arw" id="next" aria-label="Next offer">
       <svg width="12" height="12" viewBox="0 0 16 16"><path d="M5.5 2 11 8l-5.5 6" stroke="#666C80" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
-  <div class="pips" id="pips"></div>
 
   <button class="cta" id="cta">Get started
     <svg width="18" height="14" viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16m-6-6 6 6-6 6" stroke="#4633EB" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -315,19 +329,19 @@ function frame(){
     s.p.setAttribute('opacity',s.op.toFixed(3));
     var mid=(s.a0+s.a1)/2, span=s.a1-s.a0, rmid=(o1+o2)/2;
     var chord=rmid*span*Math.PI/180;          /* usable width along the band */
-    var need=s.t.s.length*6.6+10;             /* rough width of the name */
+    var need=s.t.s.length*7.3+10;             /* rough width of the name */
     var ink = s.state==='out' ? '#9AA0B0' : '#FFFFFF';
     if(chord>need && span>13){
       var q=pol(rmid, mid);
-      var two=chord>need+34;
+      var two=chord>need+38;
       s.lab.setAttribute('x',q[0].toFixed(1));
-      s.lab.setAttribute('y',(q[1]+(two?-1:4)).toFixed(1));
+      s.lab.setAttribute('y',(q[1]+(two?-2:5)).toFixed(1));
       s.lab.textContent=s.t.s;
       s.lab.setAttribute('fill',ink);
       s.lab.setAttribute('opacity',s.op.toFixed(3));
       if(two){
         s.amt.setAttribute('x',q[0].toFixed(1));
-        s.amt.setAttribute('y',(q[1]+13).toFixed(1));
+        s.amt.setAttribute('y',(q[1]+14).toFixed(1));
         s.amt.textContent=money(s.t.bal);
         s.amt.setAttribute('fill', s.state==='out' ? '#B6BBC8' : 'rgba(255,255,255,.86)');
         s.amt.setAttribute('opacity',s.op.toFixed(3));
