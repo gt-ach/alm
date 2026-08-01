@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Achieve — What you keep</title>
+<style>
+:root{
+  --indigo:#4633EB; --indigo-soft:#EFEDFE; --indigo-line:#D9D4FB; --indigo-pale:#EAE7FD;
+  --green:#12A25C; --green-ink:#0B7A44; --green-soft:#E7F6EE; --green-line:#BFE5D1;
+  --ink:#12142A; --sub:#666C80; --mut:#8E93A6; --faint:#B2B6C4;
+  --line:#E9EAEF; --hair:#F2F3F6;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#fff;color:var(--ink);overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,Helvetica,sans-serif;
+  font-weight:400;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.wrap{height:100vh;height:100dvh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;
+  padding-top:var(--sat);padding-bottom:calc(var(--sab) + 10px);overflow:hidden}
+
+.head{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 20px 0}
+.head .nm{flex:1;font-size:17px;font-weight:500;letter-spacing:-.02em}
+.head .rt{font-size:11px;color:var(--mut);text-align:right;line-height:1.25}
+.head .rt b{display:block;color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;font-size:13px}
+
+/* the dial */
+.dial{flex:1 1 auto;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}
+#svg{width:100%;height:100%;display:block}
+.seg{cursor:pointer}
+.lbl{font-size:12.5px;font-weight:600;fill:#fff;letter-spacing:-.005em}
+.lamt{font-size:10.5px;font-weight:500;fill:rgba(255,255,255,.86);font-variant-numeric:tabular-nums}
+.eyeb{font-size:10.5px;font-weight:600;letter-spacing:.16em;fill:var(--green)}
+.hero{font-size:46px;font-weight:500;letter-spacing:-.05em;fill:var(--ink)}
+.heroU{font-size:13px;font-weight:400;fill:var(--sub);letter-spacing:-.01em}
+.sub1{font-size:11px;fill:var(--mut)}
+.tick{font-size:9px;fill:var(--faint);letter-spacing:.1em}
+
+/* actions */
+.lens{flex:0 0 auto;display:flex;gap:6px;padding:2px 20px 0}
+.lens button{flex:1;padding:9px 0;border-radius:11px;font-size:13px;color:var(--sub);border:1px solid var(--line);
+  transition:.2s background,.2s color,.2s border-color}
+.lens button.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:500}
+
+.chipwrap{flex:0 0 auto;padding:12px 20px 0}
+.chiplab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:baseline;gap:5px;padding:6px 10px;border-radius:999px;font-size:12px;
+  border:1px solid var(--indigo-line);background:var(--indigo-soft);color:var(--indigo);transition:.2s all}
+.chip .amt{font-size:11px;opacity:.72;font-variant-numeric:tabular-nums}
+.chip.keep{background:var(--green-soft);border-color:var(--green-line);color:var(--green-ink)}
+.chip.out{background:#fff;border-color:var(--line);color:var(--faint)}
+.chip.out .amt{text-decoration:line-through}
+
+.bar{flex:0 0 auto;margin:12px 16px 0;border:1px solid var(--line);border-radius:17px;padding:12px 8px;
+  display:flex;align-items:center;gap:4px;background:#fff}
+.arw{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.arw:active{background:var(--indigo-soft)}
+.bar .mid{flex:1;min-width:0;text-align:center;overflow:hidden}
+.orow{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:5px}
+.rank{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
+.fitpill{font-size:10.5px;font-weight:600;color:var(--indigo);background:var(--indigo-soft);
+  border:1px solid var(--indigo-line);border-radius:999px;padding:2px 9px;letter-spacing:.01em}
+.bar .mid .n1{font-size:17px;font-weight:500;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .mid .n2{font-size:11.5px;color:var(--sub);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.omet{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:9px;padding-top:9px;border-top:1px solid var(--hair)}
+.omet span{font-size:9.5px;color:var(--mut);line-height:1.25;display:block}
+.omet b{display:block;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bar.flip .mid{animation:fl .34s cubic-bezier(.2,.8,.2,1)}
+@keyframes fl{0%{opacity:0;transform:translateX(var(--fx,14px))}100%{opacity:1;transform:none}}
+.pips{display:flex;gap:4px;justify-content:center;padding:8px 0 0}
+.pips i{width:16px;height:3px;border-radius:2px;background:#DFE1E8;transition:.3s}
+.pips i.on{background:var(--indigo);width:24px}
+
+.cta{flex:0 0 auto;margin:11px 16px 0;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--indigo);color:#fff;font-size:17.5px;font-weight:600;letter-spacing:-.01em;
+  box-shadow:0 10px 26px rgba(70,51,235,.28)}
+.cta:active{transform:translateY(1px);box-shadow:0 6px 16px rgba(70,51,235,.26)}
+
+.scrim{position:fixed;inset:0;background:rgba(18,20,42,.42);opacity:0;pointer-events:none;transition:.28s;z-index:40}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,104%);width:min(480px,100%);z-index:50;visibility:hidden;
+  background:#fff;border-radius:22px 22px 0 0;padding:8px 20px calc(var(--sab) + 20px);box-shadow:none;
+  transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s linear .34s;max-height:84dvh;overflow-y:auto}
+.sheet.open{transform:translate(-50%,0);visibility:visible;box-shadow:0 -8px 34px rgba(18,20,42,.18);
+  transition:transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.grab{width:36px;height:4px;border-radius:2px;background:#DADCE2;margin:6px auto 14px}
+.sheet h3{margin:0 0 3px;font-size:18px;font-weight:500}
+.sheet p{margin:0 0 12px;font-size:13.5px;color:var(--sub);line-height:1.45}
+.line{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.line:last-of-type{border-bottom:0}.line .k{color:var(--sub)}
+.done{width:100%;margin-top:14px;height:52px;border-radius:15px;background:var(--indigo);color:#fff;font-size:16.5px;font-weight:600;
+  box-shadow:0 10px 24px rgba(70,51,235,.26)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <svg width="23" height="18" viewBox="0 0 125 100" aria-hidden="true">
+      <path d="M60.6437 18.5423C59.8024 16.1141 57.1555 13.6768 53.5841 13.6768C50.0127 13.6768 47.3657 16.1141 46.5245 18.5423L25.4412 79.3755L35.0029 82.6489L45.2611 53.0513C47.4181 46.8232 53.5841 27.0945 53.5841 27.0945C53.5841 27.0945 59.75 46.8232 61.9071 53.0513L71.5859 80.98H82.2816L60.6437 18.5454V18.5423Z" fill="#4633EB"/>
+      <path d="M82.6976 27.4956C80.1862 26.2799 77.1571 27.3149 75.9338 29.8105C74.7105 32.306 75.752 35.316 78.2634 36.5316C79.7887 37.2695 84.2691 38.6781 88.4506 39.9243L11.9168 66.1108C5.30707 68.3736 0.549316 74.614 0.549316 81.9384C0.549316 91.1734 8.1081 98.6846 17.4017 98.6846C24.7726 98.6846 31.0741 93.9629 33.3513 87.3949L34.9968 82.6457L25.4351 79.3724L23.7896 84.1216C22.8806 86.7488 20.3507 88.6289 17.4017 88.6289C13.6855 88.6289 10.6657 85.625 10.6657 81.9353C10.6657 79.008 12.567 76.5125 15.2108 75.6092L91.7324 49.4319C89.2117 52.9685 86.5586 56.8114 85.816 58.324C84.5927 60.8196 85.6342 63.8295 88.1456 65.0452C90.657 66.2608 93.6829 65.2258 94.9093 62.7303L107.713 38.6413L82.6976 27.4925V27.4956Z" fill="#4633EB"/>
+    </svg>
+    <span class="nm">Debt Navigator</span>
+    <span class="rt"><b id="tBal">$83,300</b>7 accounts in the ring</span>
+  </div>
+
+  <div class="dial" id="dial">
+    <svg id="svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <g id="ringTrack"></g>
+      <g id="segs"></g>
+      <g id="labels"></g>
+      <g id="inner"></g>
+      <g id="center"></g>
+    </svg>
+  </div>
+
+  <div class="lens" id="lens">
+    <button data-l="0" class="on">You keep</button>
+    <button data-l="1">Per month</button>
+    <button data-l="2">Time</button>
+  </div>
+
+  <div class="chipwrap">
+    <div class="chiplab" id="chiplab">5 folded in · 2 left alone</div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="bar" id="bar">
+    <button class="arw" id="prev" aria-label="Previous offer">
+      <svg width="12" height="12" viewBox="0 0 16 16"><path d="M10.5 2 5 8l5.5 6" stroke="#666C80" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="mid">
+      <div class="orow">
+        <span class="rank" id="oRank">1 of 9</span>
+        <span class="fitpill" id="oFit">SmartFit 98</span>
+      </div>
+      <div class="n1" id="oName">Achieve home loan</div>
+      <div class="n2" id="oSub">10-year fixed · 9.2% fixed</div>
+      <div class="omet">
+        <span><b id="mPay">$1,493</b>per month</span>
+        <span><b id="mCost">$22,892</b>total interest</span>
+        <span><b id="mTime">14 yr</b>debt-free</span>
+      </div>
+    </div>
+    <button class="arw" id="next" aria-label="Next offer">
+      <svg width="12" height="12" viewBox="0 0 16 16"><path d="M5.5 2 11 8l-5.5 6" stroke="#666C80" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="pips" id="pips"></div>
+
+  <button class="cta" id="cta">Get started
+    <svg width="19" height="15" viewBox="0 0 20 16"><path d="M1 8h16m-6-6 6 6-6 6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="grab"></div>
+  <h3 id="shT">Achieve home loans</h3>
+  <p>Every account, and exactly where it lands.</p>
+  <div id="shRows"></div>
+  <button class="done" id="shDone">Continue — about 4 min</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+var TL=[
+ {id:'chase',n:'Chase Sapphire',  s:'Chase',   bal:12400,apr:27.24},
+ {id:'citi', n:'Citi Double Cash',s:'Citi',    bal:8200, apr:24.99},
+ {id:'disc', n:'Discover it',     s:'Discover',bal:4600, apr:22.49},
+ {id:'sofi', n:'SoFi Personal',   s:'SoFi',    bal:15800,apr:15.90},
+ {id:'best', n:'Best Buy Card',   s:'Best Buy',bal:2100, apr:29.99},
+ {id:'auto', n:'CarMax Auto',     s:'CarMax',  bal:21300,apr:7.40},
+ {id:'fed',  n:'Federal Student', s:'Student', bal:18900,apr:5.50}
+];
+var TODAY={pay:1833,interest:39200,years:19};
+var OF={
+ home :{n:'Achieve home loan',    tag:'10-year fixed',   rate:'9.2% fixed',   moves:['chase','citi','disc','sofi','best']},
+ adr  :{n:'Achieve debt relief',  tag:'negotiated',      rate:'not a loan',   moves:['chase','citi','disc','best']},
+ apl  :{n:'Achieve personal loan',tag:'5-year fixed',    rate:'11.9% fixed',  moves:['chase','citi','disc','best','sofi']},
+ apl3 :{n:'Achieve personal loan',tag:'3-year fixed',    rate:'10.8% fixed',  moves:['chase','citi','disc','best','sofi']},
+ dmp  :{n:'Credit counseling',    tag:'managed plan',    rate:'~8% concession',moves:['chase','citi','disc','best']},
+ heloc:{n:'Achieve HELOC',        tag:'15-year line',    rate:'10.4% variable',moves:['chase','citi','disc','sofi','best']},
+ bt   :{n:'Balance transfer',     tag:'0% for 21 mo',    rate:'then 24.9%',   moves:['chase','citi']},
+ diy  :{n:'DIY avalanche',        tag:'self-managed',    rate:'current rates', moves:['chase','citi','disc','best']},
+ auto :{n:'Auto refinance',       tag:'60-month term',   rate:'6.1% fixed',   moves:['auto']}
+};
+var LIST=[
+ {k:'home', fit:98,pay:1493,cost:22892,yrs:14},
+ {k:'adr',  fit:93,pay:1479,cost:11200,yrs:4},
+ {k:'apl',  fit:87,pay:1585,cost:9400, yrs:5},
+ {k:'apl3', fit:85,pay:1902,cost:7100, yrs:3},
+ {k:'dmp',  fit:79,pay:1621,cost:14800,yrs:5},
+ {k:'heloc',fit:74,pay:1288,cost:31400,yrs:15},
+ {k:'bt',   fit:66,pay:1702,cost:16900,yrs:6},
+ {k:'diy',  fit:61,pay:1833,cost:28600,yrs:9},
+ {k:'auto', fit:54,pay:1771,cost:36100,yrs:17}
+];
+var S={oi:0,lens:0,out:{}};
+var NS='http://www.w3.org/2000/svg';
+function $(s){return document.querySelector(s);}
+function all(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function fmt(v){return Math.round(v).toLocaleString();}
+function money(v){return '$'+fmt(v);}
+function cur(){return LIST[S.oi];}
+function off(){return OF[cur().k];}
+function stOf(id){return S.out[id]?'out':(off().moves.indexOf(id)>-1?'in':'keep');}
+function byId(id){for(var i=0;i<TL.length;i++)if(TL[i].id===id)return TL[i];return null;}
+function ratio(){var a=0,b=0;off().moves.forEach(function(id){var t=byId(id);a+=t.bal;if(!S.out[id])b+=t.bal;});return a?b/a:0;}
+function calc(){
+  var o=cur(),k=ratio();
+  var cost=o.cost+(TODAY.interest-o.cost)*(1-k)*0.55;
+  var pay=o.pay+(TODAY.pay-o.pay)*(1-k)*0.55;
+  var yrs=o.yrs+(TODAY.years-o.yrs)*(1-k)*0.4;
+  var bal=0,fold=0;
+  TL.forEach(function(t){var s=stOf(t.id); if(s!=='out')bal+=t.bal; if(s==='in')fold++;});
+  return {o:o,cost:cost,pay:pay,yrs:yrs,bal:bal,fold:fold,
+          keep:Math.max(0,TODAY.interest-cost), freed:Math.max(0,TODAY.pay-pay),
+          fit:Math.max(55,Math.round(o.fit-(1-k)*9))};
+}
+
+/* ---------- geometry ---------- */
+var CX=200, CY=192, R1=170, R2=118, IR=104, IW=14;
+function pol(r,deg){var a=(deg-90)*Math.PI/180;return [CX+r*Math.cos(a), CY+r*Math.sin(a)];}
+function ringPath(rOut,rIn,a0,a1){
+  if(a1-a0<=0.05) return '';
+  if(a1-a0>359.99) a1=a0+359.99;
+  var p1=pol(rOut,a0), p2=pol(rOut,a1), p3=pol(rIn,a1), p4=pol(rIn,a0);
+  var laf=(a1-a0)>180?1:0;
+  return 'M '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+
+         ' A '+rOut+' '+rOut+' 0 '+laf+' 1 '+p2[0].toFixed(2)+' '+p2[1].toFixed(2)+
+         ' L '+p3[0].toFixed(2)+' '+p3[1].toFixed(2)+
+         ' A '+rIn+' '+rIn+' 0 '+laf+' 0 '+p4[0].toFixed(2)+' '+p4[1].toFixed(2)+' Z';
+}
+function arcPath(r,a0,a1){
+  if(a1-a0<=0.05) return '';
+  if(a1-a0>359.99) a1=a0+359.99;
+  var p1=pol(r,a0), p2=pol(r,a1), laf=(a1-a0)>180?1:0;
+  return 'M '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' A '+r+' '+r+' 0 '+laf+' 1 '+p2[0].toFixed(2)+' '+p2[1].toFixed(2);
+}
+
+/* ---------- build ---------- */
+var SEG=[], intro=0;
+(function build(){
+  var tr=document.createElementNS(NS,'path');
+  tr.setAttribute('d',ringPath(R1,R2,0,359.99));
+  tr.setAttribute('fill','#F4F5F8'); $('#ringTrack').appendChild(tr);
+
+  TL.forEach(function(t){
+    var p=document.createElementNS(NS,'path');
+    p.setAttribute('class','seg'); p.setAttribute('data-id',t.id);
+    p.addEventListener('click',function(){toggle(t.id);});
+    $('#segs').appendChild(p);
+    var lab=document.createElementNS(NS,'text');
+    lab.setAttribute('class','lbl'); lab.setAttribute('text-anchor','middle');
+    $('#labels').appendChild(lab);
+    var amt=document.createElementNS(NS,'text');
+    amt.setAttribute('class','lamt'); amt.setAttribute('text-anchor','middle');
+    $('#labels').appendChild(amt);
+    SEG.push({t:t,p:p,lab:lab,amt:amt,a0:0,a1:0,ta0:0,ta1:0,push:0,tpush:0,op:1,top:1,fill:'#4633EB'});
+  });
+
+  var track=document.createElementNS(NS,'path');
+  track.setAttribute('d',arcPath(IR,0,359.99));
+  track.setAttribute('fill','none');track.setAttribute('stroke','#EFF0F4');track.setAttribute('stroke-width',IW);
+  track.setAttribute('stroke-linecap','round');
+  $('#inner').appendChild(track);
+  var keepArc=document.createElementNS(NS,'path');
+  keepArc.setAttribute('id','keepArc');keepArc.setAttribute('fill','none');
+  keepArc.setAttribute('stroke','#12A25C');keepArc.setAttribute('stroke-width',IW);keepArc.setAttribute('stroke-linecap','round');
+  $('#inner').appendChild(keepArc);
+
+  $('#center').innerHTML=
+    '<circle cx="'+CX+'" cy="'+CY+'" r="'+(IR-IW/2-4)+'" fill="#fff"/>'+
+    '<text id="eyeb" x="'+CX+'" y="'+(CY-38)+'" text-anchor="middle" class="eyeb">YOU KEEP</text>'+
+    '<text id="hero" x="'+CX+'" y="'+(CY+12)+'" text-anchor="middle" class="hero">$16,308</text>'+
+    '<text id="heroU" x="'+CX+'" y="'+(CY+33)+'" text-anchor="middle" class="heroU">of $39,200 interest</text>'+
+    '<text id="sub1" x="'+CX+'" y="'+(CY+54)+'" text-anchor="middle" class="sub1">with Achieve home loans</text>';
+})();
+
+/* ---------- animation ---------- */
+var num={hero:0,keepPct:0}, tgt={hero:16308,keepPct:0.42}, raf=null;
+function frame(){
+  var moving=false;
+  SEG.forEach(function(s){
+    ['a0','a1'].forEach(function(k){
+      var t=s['t'+k];
+      if(Math.abs(t-s[k])>0.08){s[k]+=(t-s[k])*0.22;moving=true;} else s[k]=t;
+    });
+    if(Math.abs(s.tpush-s.push)>0.05){s.push+=(s.tpush-s.push)*0.18;moving=true;} else s.push=s.tpush;
+    if(Math.abs(s.top-s.op)>0.004){s.op+=(s.top-s.op)*0.18;moving=true;} else s.op=s.top;
+    var o1=R1+s.push, o2=R2+s.push;
+    s.p.setAttribute('d',ringPath(o1,o2,s.a0+0.9,s.a1-0.9));
+    s.p.setAttribute('fill',s.fill);
+    s.p.setAttribute('opacity',s.op.toFixed(3));
+    var mid=(s.a0+s.a1)/2, span=s.a1-s.a0, rmid=(o1+o2)/2;
+    var chord=rmid*span*Math.PI/180;          /* usable width along the band */
+    var need=s.t.s.length*6.6+10;             /* rough width of the name */
+    var ink = s.state==='out' ? '#9AA0B0' : '#FFFFFF';
+    if(chord>need && span>13){
+      var q=pol(rmid, mid);
+      var two=chord>need+34;
+      s.lab.setAttribute('x',q[0].toFixed(1));
+      s.lab.setAttribute('y',(q[1]+(two?-1:4)).toFixed(1));
+      s.lab.textContent=s.t.s;
+      s.lab.setAttribute('fill',ink);
+      s.lab.setAttribute('opacity',s.op.toFixed(3));
+      if(two){
+        s.amt.setAttribute('x',q[0].toFixed(1));
+        s.amt.setAttribute('y',(q[1]+13).toFixed(1));
+        s.amt.textContent=money(s.t.bal);
+        s.amt.setAttribute('fill', s.state==='out' ? '#B6BBC8' : 'rgba(255,255,255,.86)');
+        s.amt.setAttribute('opacity',s.op.toFixed(3));
+      } else s.amt.textContent='';
+    } else { s.lab.textContent=''; s.amt.textContent=''; }
+  });
+  ['hero','keepPct'].forEach(function(k){
+    var d=Math.abs(tgt[k]-num[k]), eps=(k==='hero'?0.6:0.0012);
+    if(d>eps){num[k]+=(tgt[k]-num[k])*0.2;moving=true;} else num[k]=tgt[k];
+  });
+  $('#hero').textContent = S.lens===2 ? Math.round(num.hero)+'' : '$'+fmt(num.hero);
+  $('#keepArc').setAttribute('d',arcPath(IR,0,Math.max(0.6,num.keepPct*359.99)));
+  raf = moving? requestAnimationFrame(frame) : null;
+}
+function kick(){ if(!raf) raf=requestAnimationFrame(frame); }
+
+/* ---------- render ---------- */
+function render(snap){
+  var c=calc(), f=off();
+  /* ring angles from live balances */
+  var live=TL.filter(function(t){return stOf(t.id)!=='out';});
+  var liveSum=live.reduce(function(a,t){return a+t.bal;},0)||1;
+  var outSum=TL.reduce(function(a,t){return a+(stOf(t.id)==='out'?t.bal:0);},0);
+  var outShare=outSum? Math.min(0.22, outSum/(liveSum+outSum)*0.55) : 0;
+  var liveDeg=360*(1-outShare), outDeg=360*outShare;
+  var a=0;
+  TL.forEach(function(t,i){
+    var s=SEG[i], st=stOf(t.id);
+    s.state=st;
+    var span = st==='out' ? (outDeg*(t.bal/(outSum||1))) : (liveDeg*(t.bal/liveSum));
+    s.ta0=a; s.ta1=a+span; a+=span;
+    if(st==='in'){ s.fill='#4633EB'; s.tpush=0; s.top=1; }
+    else if(st==='keep'){ s.fill='#2E9C6B'; s.tpush=0; s.top=1; }
+    else { s.fill='#E9EBF0'; s.tpush=10; s.top=1; }
+  });
+  /* center per lens */
+  if(S.lens===0){
+    $('#eyeb').textContent='YOU KEEP'; $('#eyeb').setAttribute('fill','#12A25C');
+    $('#heroU').textContent='of '+money(TODAY.interest)+' interest';
+    tgt.hero=c.keep; tgt.keepPct=c.keep/TODAY.interest;
+  } else if(S.lens===1){
+    $('#eyeb').textContent='BACK EACH MONTH'; $('#eyeb').setAttribute('fill','#12A25C');
+    $('#heroU').textContent=money(TODAY.pay)+' becomes '+money(c.pay);
+    tgt.hero=c.freed; tgt.keepPct=c.freed/TODAY.pay;
+  } else {
+    $('#eyeb').textContent='YEARS YOU GET BACK'; $('#eyeb').setAttribute('fill','#12A25C');
+    $('#heroU').textContent='debt-free in '+Math.round(c.yrs)+' instead of '+TODAY.years;
+    tgt.hero=TODAY.years-c.yrs; tgt.keepPct=(TODAY.years-c.yrs)/TODAY.years;
+  }
+  $('#sub1').textContent='with '+f.n;
+  if(snap){ num.hero=tgt.hero; num.keepPct=tgt.keepPct; }
+  /* chips */
+  $('#chips').innerHTML=TL.map(function(t){
+    var s=stOf(t.id), cls=s==='in'?'chip':(s==='keep'?'chip keep':'chip out');
+    return '<button class="'+cls+'" data-id="'+t.id+'">'+esc(t.s)+'<span class="amt">'+money(t.bal)+'</span></button>';
+  }).join('');
+  all('#chips .chip').forEach(function(b){
+    b.addEventListener('click',function(){toggle(b.getAttribute('data-id'));});
+  });
+  $('#chiplab').textContent=c.fold+' folded in · '+(TL.length-c.fold)+' left alone · tap to change';
+  $('#tBal').textContent=money(c.bal);
+  $('#oRank').textContent=(S.oi+1)+' of '+LIST.length;
+  $('#oFit').textContent='SmartFit '+c.fit;
+  $('#oName').textContent=f.n;
+  $('#oSub').textContent=f.tag+' · '+f.rate;
+  $('#mPay').textContent=money(c.pay);
+  $('#mCost').textContent=money(c.cost);
+  $('#mTime').textContent=Math.round(c.yrs)+' yr';
+  all('#lens button').forEach(function(b,i){b.classList.toggle('on',i===S.lens);});
+  all('#pips i').forEach(function(p,i){p.classList.toggle('on',i===S.oi);});
+  kick();
+}
+function toggle(id){
+  if(off().moves.indexOf(id)===-1) return;
+  if(S.out[id]) delete S.out[id]; else S.out[id]=1;
+  render();
+}
+all('#lens button').forEach(function(b){
+  b.addEventListener('click',function(){
+    if(raf){cancelAnimationFrame(raf);raf=null;}
+    S.lens=+b.getAttribute('data-l'); render(true);
+  });
+});
+var busy=false;
+function swap(d){
+  if(busy)return; busy=true;
+  var bar=$('#bar');
+  bar.style.setProperty('--fx',(d>0?14:-14)+'px');
+  bar.classList.remove('flip'); void bar.offsetWidth; bar.classList.add('flip');
+  S.oi=(S.oi+d+LIST.length)%LIST.length; render();
+  setTimeout(function(){busy=false;},240);
+}
+$('#prev').addEventListener('click',function(){swap(-1);});
+$('#next').addEventListener('click',function(){swap(1);});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight')swap(1); if(e.key==='ArrowLeft')swap(-1);
+});
+(function(){
+  var x0=null,y0=null,lock=null,el=$('#dial');
+  el.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY;lock=null;},{passive:true});
+  el.addEventListener('touchmove',function(e){
+    if(x0===null)return;var dx=e.touches[0].clientX-x0,dy=e.touches[0].clientY-y0;
+    if(lock===null&&(Math.abs(dx)>8||Math.abs(dy)>8))lock=Math.abs(dx)>Math.abs(dy)?'x':'y';
+  },{passive:true});
+  el.addEventListener('touchend',function(e){
+    if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;
+    if(lock==='x'&&Math.abs(dx)>48)swap(dx<0?1:-1);
+    x0=null;
+  },{passive:true});
+})();
+function openSheet(){
+  var c=calc(),f=off();
+  $('#shT').textContent=f.n+' · '+f.tag;
+  $('#shRows').innerHTML=TL.map(function(t){
+    var s=stOf(t.id), lbl=s==='in'?'folded in':(s==='keep'?'kept as-is':'left out');
+    var col=s==='in'?'#4633EB':(s==='keep'?'#0B7A44':'#9A7B3E');
+    return '<div class="line"><span class="k">'+esc(t.n)+'</span><span class="v" style="color:'+col+'">'+lbl+'</span></div>';
+  }).join('')
+   +'<div class="line"><span class="k">one payment</span><span class="v">'+money(c.pay)+'/mo</span></div>'
+   +'<div class="line"><span class="k">you keep</span><span class="v" style="color:#12A25C">'+money(c.keep)+'</span></div>';
+  $('#sheet').classList.add('open');$('#scrim').classList.add('open');
+}
+function closeSheet(){$('#sheet').classList.remove('open');$('#scrim').classList.remove('open');}
+$('#cta').addEventListener('click',openSheet);
+$('#scrim').addEventListener('click',closeSheet);
+$('#shDone').addEventListener('click',function(){
+  var b=$('#shDone');b.textContent='Handing off…';
+  setTimeout(function(){b.textContent='Continue — about 4 min';closeSheet();},900);
+});
+
+/* pips scale to however many offers exist */
+$('#pips').innerHTML=LIST.map(function(_,i){return '<i'+(i===0?' class="on"':'')+'></i>';}).join('');
+
+/* first paint: sweep the ring open once */
+render(true);
+SEG.forEach(function(s){ s.a0=s.ta0; s.a1=s.ta0; });
+num.hero=0; num.keepPct=0;
+kick();
+})();
+</script>
+</body>
+</html>
