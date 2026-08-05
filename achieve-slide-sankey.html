@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>Achieve · The sankey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ach-blue:#3300FF; --trust-lt:#21A1FF; --trust-dk:#041B93;
+  --ink:#1F1F23; --bg:#F9F9FE;
+  --danger:#E12D39; --warn:#F2780C;
+  --green:#57E66A; --green-d:#118A43; --green-t:#E4FBEA;
+  --mut:#61616B; --faint:#9C9CA6; --line:#E8E8F0; --card:#FFFFFF;
+  --grad:linear-gradient(94deg,#3300FF,#21A1FF);
+  --shadow:0 1px 2px rgba(31,31,35,.05),0 8px 24px rgba(31,31,35,.07);
+  --ease:cubic-bezier(.45,.05,.2,1);
+  --paneH:clamp(330px,calc(100dvh - 437px),504px); --dropH:58px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--card);font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+.app{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:24px}
+@media(min-width:600px){body{background:#EFEFF8}.app{background:var(--card);box-shadow:0 0 60px rgba(31,31,35,.12)}}
+
+.logo6{display:flex;align-items:center;gap:11px;padding:18px 20px 0}
+.hdrname{font-size:16.5px;font-weight:700;letter-spacing:-.01em}
+.avatar{width:34px;height:34px;border-radius:99px;background:#E8E8F0;color:var(--ink);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-left:auto}
+.burger{border:0;background:none;padding:6px 2px;display:flex;flex-direction:column;gap:4.5px}
+.burger i{display:block;width:21px;height:2.5px;border-radius:2px;background:var(--ink)}
+
+.inspire{display:flex;align-items:center;gap:8px;margin:14px 20px 0;padding:12px 0;border-radius:10px;font-size:clamp(15px,4.85vw,21px);font-weight:700;letter-spacing:-.015em;color:var(--ink);min-height:66px;line-height:1.35;white-space:nowrap}
+.inspire #inspTxt{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.inspire b{color:var(--green-d)}
+
+.seg6{display:flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--shadow);margin:16px 20px 0}
+.seg6 button{flex:1;border:0;background:none;border-radius:999px;padding:10px 6px;font-size:15px;font-weight:600;color:var(--mut);display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;transition:.25s;white-space:nowrap}
+.sgi{width:18px;height:18px;flex:none;fill:currentColor;transition:opacity .25s}
+.seg6 button:not(.on) .sgi{opacity:.72}
+.seg6 button.on{background:#EFEFF6;color:var(--ink);font-weight:700}
+
+.panes{position:relative;overflow:hidden;margin-top:12px;height:var(--paneH);transition:height .45s var(--ease)}
+.panes.tall{height:calc(var(--paneH) + var(--dropH))}
+.tpane{position:absolute;top:0;bottom:0;left:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transition:width .45s var(--ease)}
+.trow6{position:relative;background:#fff;border:1px solid var(--line);border-left:3px solid;border-radius:8px;margin-bottom:6px;overflow:hidden;transition:transform .45s var(--ease),height .45s var(--ease),border-color .4s ease,opacity .4s ease}
+.trow6.off{border-style:dashed;border-left-style:solid;opacity:.55}
+.tmain{display:flex;align-items:center;gap:9px;padding:0 11px;height:56px;cursor:pointer}
+.trow6:not(.open) .tmain{height:100%}
+.tmid{flex:1;min-width:0}
+.tmid b{display:block;font-size:16.5px;font-weight:500;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tsub{display:block;font-size:13px;font-weight:700;color:var(--mut);margin-top:1px;white-space:nowrap;font-variant-numeric:tabular-nums;transition:opacity .3s}
+.ta{font-weight:800}
+.kamt{display:none;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;flex:none;color:var(--ink)}
+.chv{width:14px;height:14px;flex:none;transition:transform .35s var(--ease),opacity .3s}
+.chv svg{width:14px;height:14px;stroke:var(--faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.trow6.open .chv{transform:rotate(180deg)}
+.tlogo{width:0;height:21px;margin-left:-9px;opacity:0;overflow:hidden;border-radius:4.5px;color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:inset 0 -6px 10px rgba(0,0,0,.14);transition:width .3s var(--ease),opacity .3s ease,margin .3s var(--ease)}
+/* sankey mode: logos only, fused into groups like the slide-over */
+.tpane.sank .tlogo{width:33px;margin-left:0;opacity:1}
+.tpane.sank .tmid,.tpane.sank .chv{opacity:0}
+.tpane.sank .tmain{cursor:default;padding:0 9.5px;gap:6px;height:100%}
+.tpane.sank .trow6{border-left-width:1px!important;border-left-color:var(--line)!important;flex:none}
+.trow6.off .tlogo{filter:grayscale(.7);opacity:.7}
+.tmid,.chv{transition:opacity .3s ease}
+.tdet{padding:6px 12px 15px}
+.tdiag{font-size:12px;font-weight:500;color:var(--mut);line-height:1.5;margin-top:11px;padding:0 2px}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;padding:11px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.tg{min-width:0}
+.tg span{display:block;font-size:10.5px;font-weight:600;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg b{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.01em;margin-top:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tfit{display:flex;align-items:center;gap:8px;margin-top:11px;padding:0 2px}
+.tfit .fl{font-size:11px;font-weight:700;color:var(--mut);white-space:nowrap}
+.tfit .fm{flex:1;min-width:20px;height:6px;border-radius:99px;background:#E7E7F0;overflow:hidden}
+.tfit .fm i{display:block;height:100%;border-radius:99px}
+.tfit .fv{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tfit .fv small{font-size:10px;font-weight:700;color:var(--faint)}
+.tinc{display:flex;align-items:center;gap:9px;margin-top:12px}
+.tinc .t{flex:1;font-size:12px;font-weight:700;color:var(--mut)}
+.tinc .t small{display:block;font-size:10.5px;font-weight:500;color:var(--faint);margin-top:1px}
+.sw{width:42px;height:25px;border-radius:999px;background:#D4D4E4;position:relative;border:0;flex:none;transition:background .25s}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:99px;background:#fff;box-shadow:0 1px 3px rgba(31,31,35,.3);transition:transform .25s var(--ease)}
+.sw.on{background:var(--green-d)}
+.sw.on::after{transform:translateX(17px)}
+
+.gpane{position:absolute;top:0;bottom:0;transition:left .45s var(--ease),width .45s var(--ease),opacity .35s ease}
+.gpane.loading .gcard i::after{content:'';position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:shim 1.1s linear infinite}
+@keyframes shim{to{transform:translateX(100%)}}
+.gcard{position:absolute;left:0;right:0;background:#fff;border:1.5px solid #BDD3F0;border-radius:14px;padding:15px 16px;display:flex;flex-direction:column;gap:9px;overflow:hidden}
+.gcard.k{background:var(--bg);border:1px solid var(--line)}
+.gcard .gmsg{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ach-blue)}
+.gcard i{display:block;border-radius:6px;background:#E7E7F0;height:12px;position:relative;overflow:hidden}
+.gcard i.t{height:22px;width:78%}
+.gcard i.g{height:34px;background:#DDF2E2;border-radius:8px}
+.gcard i.c{height:12px;width:64%;background:#DCE4FB;margin-top:auto}
+.gcard i.t2{height:16px;width:46%}
+#sank{position:absolute;inset:0;pointer-events:none;width:100%;height:100%}
+#sank path{transition:opacity .5s ease}
+.rcard{position:absolute;background:#fff;border:1.5px solid #BDD3F0;border-radius:14px;padding:15px 16px;opacity:0;overflow:hidden;display:flex;flex-direction:column;pointer-events:none}
+.rcard>*:not(.skel6){opacity:0;transform:translateY(5px);transition:opacity .4s ease,transform .5s var(--ease)}
+.rcard.live>*:not(.skel6){opacity:1;transform:none}
+.rcard.live>*:nth-child(3){transition-delay:60ms}
+.rcard.live>*:nth-child(4){transition-delay:120ms}
+.rcard.live>*:nth-child(5){transition-delay:180ms}
+.rcard.live>*:nth-child(6){transition-delay:240ms}
+.rcard.live>*:nth-child(7){transition-delay:300ms}
+.rcard.live>*:nth-child(8){transition-delay:360ms}
+.rcard.live>*:nth-child(9){transition-delay:420ms}
+.rcard.live>*:nth-child(10){transition-delay:480ms}
+.skel6{position:absolute;inset:0;background:#fff;border-radius:12.5px;padding:15px 16px;display:flex;flex-direction:column;gap:9px;z-index:3;opacity:1;transition:opacity .45s ease;pointer-events:none}
+.kept6 .skel6{background:var(--bg)}
+.skel6 i{display:block;border-radius:6px;background:#E7E7F0;height:12px;position:relative;overflow:hidden}
+.skel6 i.t{height:22px;width:78%}
+.skel6 i.g{height:34px;background:#DDF2E2;border-radius:8px}
+.skel6 i.c{height:12px;width:64%;background:#DCE4FB;margin-top:auto}
+.skel6 i.t2{height:16px;width:46%}
+.skel6 .gmsg{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ach-blue)}
+.rcard.live .skel6{opacity:0}
+.rcard.loading .skel6 i::after{content:'';position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:shim 1.1s linear infinite}
+.rcard.show{opacity:1;pointer-events:auto}
+.rcard.kept6{background:var(--bg);border:1px solid var(--line)}
+.ok6{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ach-blue)}
+.on6b{font-size:19px;font-weight:700;letter-spacing:-.015em;margin-top:3px}
+.om6b{font-size:14px;font-weight:700;margin-top:6px;font-variant-numeric:tabular-nums}
+.om6c{font-size:13.5px;font-weight:700;color:#4C9F6E;margin-top:3px;font-variant-numeric:tabular-nums}
+.osave6{font-size:12.5px;font-weight:700;color:var(--green-d);background:var(--green-t);border-radius:8px;padding:8px 10px;margin-top:10px;font-variant-numeric:tabular-nums}
+.octa6{font-size:12.5px;font-weight:700;color:var(--ach-blue);margin-top:auto;padding-top:10px}
+.kt1{font-size:13.5px;font-weight:700;color:var(--trust-dk);white-space:nowrap}
+.kt2{font-size:11.5px;font-weight:500;color:var(--mut);margin-top:5px;line-height:1.5}
+
+.droprow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px 0;overflow:hidden;max-height:80px;transition:max-height .45s var(--ease),opacity .3s ease,padding .45s var(--ease),visibility .45s}
+.droprow.hid{max-height:0;opacity:0;padding-top:0;padding-bottom:0;visibility:hidden;pointer-events:none}
+.droprow .dl{font-size:15px;font-weight:700;color:var(--ink);flex:none}
+.selwrap{position:relative;flex:1;min-width:238px;max-width:272px;margin-left:auto}
+.selwrap .selbtn{display:flex;align-items:center;width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:11px 38px 11px 16px;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);min-height:44px;text-align:left}
+.selmenu{position:absolute;left:0;right:0;bottom:calc(100% + 9px);background:#fff;border:1.5px solid var(--line);border-radius:15px;box-shadow:0 14px 34px rgba(31,31,35,.18);padding:6px;z-index:30;opacity:0;transform:translateY(7px) scale(.97);transform-origin:bottom center;pointer-events:none;transition:opacity .2s ease,transform .24s var(--ease)}
+.selwrap.open .selmenu{opacity:1;transform:none;pointer-events:auto}
+.selopt{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;font-family:inherit;font-size:15px;font-weight:600;color:var(--ink);padding:11px 12px;border-radius:11px;min-height:48px}
+.selopt+.selopt{margin-top:2px}
+.selopt::before{content:'';width:17px;height:17px;border-radius:99px;border:2px solid #C9C9DE;flex:none;transition:border-color .2s,background .2s}
+.selopt.on{font-weight:800;background:#F2F4FF}
+.selopt.on::before{border-color:var(--ach-blue);background:radial-gradient(circle at 50% 50%,var(--ach-blue) 0 4.5px,transparent 5px)}
+.droprow.menuopen{overflow:visible}
+.selwrap svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--mut);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+
+.tiles6{padding:14px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile6{background:#EAF4FF;border:1.5px solid #BDD3F0;border-radius:9px;padding:8px 12px;transition:background .55s ease,border-color .55s ease}
+.tl6{font-size:11px;font-weight:500;color:var(--mut);line-height:1.25}
+.tv6{font-size:17px;font-weight:700;margin-top:1px;font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.18;height:1.18em;overflow:hidden;white-space:nowrap}
+.ts6{font-size:11px;font-weight:500;color:var(--mut);margin-top:1px;line-height:1.25;transition:color .45s ease}
+/* ===== loading carousel, inside the offer container (identical in both) ===== */
+.lslide{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:calc(100% - 44px);max-width:206px;z-index:5;background:#F4F6FA;border:1px solid #E3E8F1;border-radius:13px;box-shadow:0 10px 26px rgba(31,31,35,.13);padding:12px 11px;display:flex;flex-direction:column;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.lslide.on{opacity:1}
+.lbody{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .55s var(--ease)}
+.lbody.in{opacity:1;transform:none}
+.leyebrow{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#3F6DB8;text-align:center}
+.lhead{font-size:13px;font-weight:700;letter-spacing:-.015em;line-height:1.25;margin-top:5px;color:#16202E;text-align:center}
+.lcard{border-radius:10px;padding:7px 9px;margin-top:10px}
+.lcard.now{background:#FDF4F4;border:1.5px solid #F3D7D7}
+.lcard.opt{background:#fff;border:1.5px solid #E8E8F0;box-shadow:0 5px 14px rgba(31,31,35,.08)}
+.lcard .ll{display:block;font-size:10.5px;font-weight:600;color:#5B6472;line-height:1.25}
+.lcard b{display:block;font-size:17px;font-weight:800;letter-spacing:-.03em;margin-top:1px;font-variant-numeric:tabular-nums}
+.lcard.now b{color:#E12D39}
+.lcard.opt b{color:#16324F}
+.lcard .ls{display:block;font-size:10.5px;font-weight:600;color:#9AA2AE;margin-top:2px;line-height:1.25}
+.lcard.opt .ls{color:#118A43}
+.lconn{display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:5px}
+.lconn i{width:9px;height:5px;border-radius:99px;background:#C6D2E4;display:block}
+.lconn i:first-child{width:15px;background:#8FA6C6}
+.lcap{display:none}
+.ldots{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:11px}
+.ldots i{width:6px;height:6px;border-radius:99px;background:#C9D3E2;display:block;transition:background .3s,transform .3s}
+.ldots i.on{background:#2F5DA8;transform:scale(1.15)}
+@media (max-height:800px){.leyebrow{display:none}.lhead{font-size:12px}.lcard b{font-size:15px}.lcard{padding:6px 9px;margin-top:8px}.ldots{margin-top:8px}}
+@property --ring{syntax:'<angle>';initial-value:0deg;inherits:false}
+.selwrap::before{content:'';position:absolute;inset:-3px;border-radius:999px;padding:2px;background:conic-gradient(from var(--ring),rgba(51,0,255,0) 0deg,rgba(51,0,255,0) 205deg,rgba(33,161,255,.30) 275deg,rgba(51,0,255,.85) 332deg,rgba(33,161,255,.30) 352deg,rgba(51,0,255,0) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .5s ease}
+.droprow.ready .selwrap::before{opacity:1;animation:ringspin 3.4s linear infinite}
+.droprow.ready .selwrap .selbtn{animation:ringglow 3.4s ease-in-out infinite}
+@keyframes ringspin{to{--ring:360deg}}
+@keyframes ringglow{0%,100%{box-shadow:0 0 0 0 rgba(51,0,255,0)}50%{box-shadow:0 0 13px 0 rgba(51,0,255,.14)}}
+.droprow.used .selwrap::before{opacity:0;animation:none}
+.droprow.used .selwrap .selbtn{animation:none}
+@media (prefers-reduced-motion: reduce){.selwrap::before,.selwrap .selbtn{animation:none!important}}
+.fit6{display:flex;align-items:center;gap:8px;margin-top:10px}
+.fit6 .fl{font-size:11px;font-weight:700;color:var(--mut);white-space:nowrap}
+.fit6 .fm{flex:1;min-width:22px;height:6px;border-radius:99px;background:#E7E7F0;overflow:hidden}
+.fit6 .fm i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#21A1FF,#118A43);transition:width .9s var(--ease)}
+.fit6 .fv{font-size:13.5px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+.fit6 .fv small{font-size:10px;font-weight:700;color:var(--faint)}
+.tv6 .dg{display:inline-block;height:1.18em;overflow:hidden;vertical-align:top;font-style:normal}
+.tv6 .dg b{display:block;font-weight:inherit}
+.tv6 .dg u{display:block;height:1.18em;line-height:1.18;text-decoration:none}
+.tv6 .ch{display:inline-block;line-height:1.18;vertical-align:top;white-space:pre;font-style:normal}
+.tiles6.win .tile6{background:#E9FAEF;border-color:#A8DEBF}
+.tiles6.win .ts6{color:var(--green-d);font-weight:700}
+/* --- compact metric grid on the offer card --- */
+.ogrid{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;margin-top:10px}
+.og span{display:block;font-size:9.5px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.og b{display:block;font-size:13px;font-weight:800;letter-spacing:-.01em;margin-top:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#oCard{cursor:pointer}
+/* --- the deeper view --- */
+.scrim{position:fixed;inset:0;background:rgba(16,18,28,.44);opacity:0;pointer-events:none;transition:opacity .35s ease;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,100%);width:100%;max-width:430px;max-height:90dvh;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -14px 40px rgba(16,18,28,.22);z-index:41;display:flex;flex-direction:column;transition:transform .45s var(--ease);overscroll-behavior:contain}
+.sheet.on{transform:translate(-50%,0)}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 10px}
+.sk{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ach-blue)}
+.st{font-size:24px;font-weight:700;letter-spacing:-.025em;margin-top:2px}
+.ssub{font-size:13.5px;font-weight:600;color:var(--mut);margin-top:4px}
+.sx{margin-left:auto;flex:none;width:34px;height:34px;border-radius:99px;border:0;background:#EFEFF6;color:var(--ink);font-size:14px;font-weight:800;line-height:1}
+.sbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2px 20px 10px}
+.srow{display:flex;align-items:center;gap:12px;padding:11px 0}
+.sl{flex:1;min-width:0}
+.sl b{display:block;font-size:17.5px;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+.sl i{display:block;font-style:normal;font-size:13px;font-weight:500;color:var(--mut);margin-top:3px;line-height:1.35}
+.sv{flex:none;display:flex;align-items:baseline;gap:7px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sv .was{font-size:14px;font-weight:600;color:var(--faint)}
+.sv .arw{font-size:12px;color:#C0C0CE}
+.sv .now{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.sv .now.g{color:var(--green-d)}
+.sfoot{padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:#fff}
+.bigcta{width:100%;min-height:56px;border:0;border-radius:999px;background:var(--grad);color:#fff;font-size:18px;font-weight:800;letter-spacing:-.01em;box-shadow:0 10px 22px rgba(51,0,255,.25)}
+.sfine{font-size:11.5px;font-weight:500;color:var(--faint);text-align:center;margin-top:9px;line-height:1.45}
+/* --- sparkle hint on Optimized, until they take the hint --- */
+.seg6 button{position:relative;overflow:hidden}
+#sg6o::before{content:'';position:absolute;inset:0;border-radius:999px;background:linear-gradient(100deg,transparent 16%,rgba(51,0,255,.08) 44%,rgba(33,161,255,.15) 54%,transparent 84%);transform:translateX(-120%);opacity:0;pointer-events:none}
+.seg6.hint #sg6o::before{opacity:1;animation:sheen 6s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes sheen{0%{transform:translateX(-130%)}24%,100%{transform:translateX(130%)}}
+.spk{position:absolute;width:8px;height:8px;background:linear-gradient(135deg,#3300FF,#21A1FF);clip-path:polygon(50% 0%,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0% 50%,42% 42%);opacity:0;transform:scale(.5);pointer-events:none}
+.spk.a{right:17px;top:8px}
+.spk.b{right:11px;top:26px;width:5px;height:5px}
+.seg6.hint #sg6o .spk{animation:twinkle 6s ease-in-out infinite}
+.seg6.hint #sg6o .spk.b{animation-delay:.62s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}8%{opacity:.8;transform:scale(1)}21%{opacity:0;transform:scale(.6)}}
+@media (prefers-reduced-motion: reduce){.seg6.hint #sg6o::before,.seg6.hint #sg6o .spk{animation:none;opacity:0}}
+.sfit{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;margin:2px 20px 10px;padding:13px 15px;background:#F4F8FF;border:1.5px solid #BDD3F0;border-radius:13px}
+.sfl{font-size:16.5px;font-weight:800;letter-spacing:-.015em}
+.sfl i{display:block;font-style:normal;font-size:12.5px;font-weight:500;color:var(--mut);margin-top:3px;line-height:1.35}
+.sfr{font-size:34px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+.sfr small{font-size:14px;font-weight:700;color:var(--faint);letter-spacing:0}
+.sfbar{grid-column:1/-1;height:8px;border-radius:99px;background:#E2E9F5;overflow:hidden;margin-top:11px}
+.sfbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#21A1FF,#118A43);transition:width 1s var(--ease)}
+@media (prefers-reduced-motion: reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="logo6"><img src="https://www.achieve.com/_next/static/media/mini-gradient.1g68432-ztm2m.svg" alt="Achieve" style="height:32px;display:block" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'"><svg id="logoFallback" style="display:none" width="34" height="30" viewBox="0 0 34 30" fill="none"><defs><linearGradient id="ag" x1="0" y1="30" x2="34" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#3300FF"/><stop offset="1" stop-color="#21A1FF"/></linearGradient></defs><path d="M2.5 28 C6.5 18 10.5 8 13.2 4.2 C14.6 2.2 16.6 2.7 17.5 5.2 C19.8 11.2 21.8 17.8 23.6 23.6" stroke="url(#ag)" stroke-width="3.4" stroke-linecap="round"/><path d="M6.5 18.5 C13.5 16.5 20.5 15 29 13" stroke="url(#ag)" stroke-width="3.4" stroke-linecap="round"/><path d="M25.8 8.8 L30.8 12.6 L26.8 17" stroke="url(#ag)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="hdrname">Debt Navigator</span><span class="avatar">J</span><button class="burger" aria-label="Menu"><i></i><i></i><i></i></button></div>
+
+  <div class="inspire"><span id="inspTxt">Up to <b>$10,724</b> could be forgiven.</span></div>
+
+  <div class="seg6 hint" id="seg6">
+    <button class="on" id="sg6c"><svg class="sgi" viewBox="0 0 20 20" aria-hidden="true" style="color:var(--ach-blue)"><rect x="2.4" y="3.4" width="6.8" height="3.4" rx="1.7"/><rect x="2.4" y="8.3" width="11" height="3.4" rx="1.7"/><rect x="2.4" y="13.2" width="15.2" height="3.4" rx="1.7"/></svg>Current</button>
+    <button id="sg6o"><svg class="sgi" viewBox="0 0 20 20" aria-hidden="true" style="color:#118A43"><circle cx="10" cy="10" r="8.6" fill="#118A43" opacity=".16"/><path d="M5.9 10.2l2.8 2.8 5.4-5.9" fill="none" stroke="#118A43" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Optimized<span class="spk a"></span><span class="spk b"></span></button>
+  </div>
+
+  <div class="panes" id="panes6">
+    <div class="tpane" id="tpane6"></div>
+    <div class="gpane" id="gpane">
+      <div class="gcard" id="gOff"><span class="gmsg" id="gm1">Your offer</span><i class="t"></i><i></i><i></i><i class="g"></i><i class="c"></i>
+        <div class="lslide" id="lslide">
+          <div class="lbody" id="lbody">
+            <div class="leyebrow" id="lEy"></div>
+            <div class="lhead" id="lHd"></div>
+            <div class="lcard now"><span class="ll" id="lL1"></span><b id="lV1"></b><span class="ls" id="lS1"></span></div>
+            <div class="lconn"><i></i><i></i></div>
+            <div class="lcard opt"><span class="ll" id="lL2"></span><b id="lV2"></b><span class="ls" id="lS2"></span></div>
+            <div class="lcap" id="lCap"></div>
+          </div>
+          <div class="ldots" id="lDots"><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="gcard k" id="gKept"><i class="t2"></i><i></i></div>
+    </div>
+    <svg id="sank"></svg>
+    <div class="rcard off6" id="oCard">
+      <div class="skel6"><span class="gmsg">Finding your best offer…</span><i class="t"></i><i></i><i></i><i class="g"></i><i class="c"></i></div>
+      <div class="ok6">Your offer</div>
+      <div class="on6b">Debt resolution</div>
+      <div class="om6b" id="vRepay">You repay just $27,576</div>
+      <div class="om6c" id="vForg">$10,724 forgiven</div>
+      <div class="osave6" id="vStays">$38,204 stays with you</div>
+      <div class="ogrid">
+        <div class="og"><span>Payment</span><b id="gPay">$575/mo</b></div>
+        <div class="og"><span>Debt-free</span><b id="gFree">Aug 2030</b></div>
+        <div class="og"><span>Blended rate</span><b id="gRate">18.7%</b></div>
+        <div class="og"><span>Accounts</span><b id="gAcc">6 of 8</b></div>
+      </div>
+      <div class="fit6" id="vFit"><span class="fl">Fit score</span><span class="fm"><i id="fBar"></i></span><span class="fv"><span id="fNum">89</span><small>/100</small></span></div>
+      <div class="octa6">See the full breakdown →</div>
+    </div>
+    <div class="rcard kept6" id="kCard">
+      <div class="skel6"><i class="t2"></i><i></i></div>
+      <div class="kt1" id="kt7">Kept as-is · −$1,301/mo</div>
+      <div class="kt2" id="kList">Rocket Mortgage 2.9% · Navient Student Loan 5.8%. Stays as it is today.</div>
+    </div>
+  </div>
+
+  <div class="droprow hid" id="droprow">
+    <span class="dl">Optimize for</span>
+    <span class="selwrap">
+      <button type="button" class="selbtn" id="stratBtn" aria-haspopup="listbox" aria-expanded="false"><span id="stratLbl">Lowest Payment</span></button>
+      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      <div class="selmenu" id="stratMenu" role="listbox" aria-label="Optimization strategy">
+        <button type="button" class="selopt on" role="option" aria-selected="true" data-v="payment">Lowest Payment</button>
+        <button type="button" class="selopt" role="option" aria-selected="false" data-v="cost">Lowest Total Cost</button>
+      </div>
+    </span>
+  </div>
+
+  <div class="tiles6">
+    <div class="tile6"><div class="tl6">Monthly deposit</div><div class="tv6" id="tDep">$575</div><div class="ts6" id="tDepS">vs $1,150 in minimums</div></div>
+    <div class="tile6"><div class="tl6">You repay</div><div class="tv6" id="tRepay">$27,576</div><div class="ts6" id="tOwed">of $38,300 owed</div></div>
+    <div class="tile6"><div class="tl6">Debt-free*</div><div class="tv6" id="tFree">Aug 2030</div><div class="ts6" id="tFreeS">7.7 yrs sooner</div></div>
+    <div class="tile6"><div class="tl6">Stays with you</div><div class="tv6" id="tStays">$38,204</div><div class="ts6">vs paying minimums</div></div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Your plan in full">
+  <div class="shead">
+    <div><div class="sk">Your offer</div><div class="st">Debt resolution</div><div class="ssub" id="sSub">Every number, before and after.</div></div>
+    <button class="sx" id="sheetX" aria-label="Close">✕</button>
+  </div>
+  <div class="sfit">
+    <div class="sfl">Fit score<i>how well this plan fits what you owe</i></div>
+    <div class="sfr"><span id="sfNum">89</span><small>/100</small></div>
+    <div class="sfbar"><i id="sfBar"></i></div>
+  </div>
+  <div class="sbody" id="sbody"></div>
+  <div class="sfoot">
+    <button class="bigcta" id="bigCta">See my program</button>
+    <div class="sfine">Soft check only. Looking at your options will not affect your credit score.</div>
+  </div>
+</div>
+
+<script>
+const T7=[
+ {id:'mort', n:'Rocket Mortgage',            bal:208000,apr:2.9, pay:1106,c:'#21A1FF',l:'RM',lc:'#C8102E',m:false,
+  d:'2.9% is excellent. Never touch it, kept exactly as it is.'},
+ {id:'chase',n:'Chase Visa Signature',       bal:9400,  apr:24.9,pay:280, c:'#E12D39',l:'CH',lc:'#117ACA',m:true,
+  d:'24.9% is danger territory. Most of each payment is interest, not balance.'},
+ {id:'macys',n:'Macy’s Store Card',          bal:2600,  apr:27.4,pay:110, c:'#E12D39',l:'MA',lc:'#E21A2C',m:true,
+  d:'27.4% is your single most expensive money. First into the program.'},
+ {id:'citi', n:'Citi Mastercard',            bal:4300,  apr:22.9,pay:130, c:'#E12D39',l:'CI',lc:'#056DAE',m:true,
+  d:'22.9% revolving debt, a prime candidate for resolution.'},
+ {id:'sofi', n:'SoFi Personal Loan',         bal:6000,  apr:17.5,pay:210, c:'#F2780C',l:'SO',lc:'#00A9C0',m:true,
+  d:'17.5%. The program beats it.'},
+ {id:'toyota',n:'Toyota Financial Auto Loan',bal:14800, apr:14.0,pay:360, c:'#F2780C',l:'TO',lc:'#EB0A1E',m:true,
+  d:'14.0%. Resolving it drops the payment and keeps the same car.'},
+ {id:'nav',  n:'Navient Student Loan',       bal:8200,  apr:5.8, pay:195, c:'#21A1FF',l:'NA',lc:'#143C6D',m:false,
+  d:'5.8% already beats anything new. Stays as it is.'},
+ {id:'mercy',n:'Mercy Hospital Plan',bal:1200,  apr:0,   pay:60,  c:'#21A1FF',l:'ME',lc:'#7C8A97',m:false,
+  d:'0% interest, but it still ties up $60/mo. Joins the program when optimizing for payment.'}
+];
+const SETL={payment:{r:0.72,term:48,extra:['mercy']},cost:{r:0.64,term:36,extra:[]}};
+const inProg=a=>(a.m||SETL[strat].extra.includes(a.id))&&!excl6.has(a.id);
+const STAYS_R=94962/26656, BASELINE_M=140;
+let strat='payment';
+let opt=false, revealT=null;
+let shown=false;
+const open6=new Set(), excl6=new Set();
+const fmt$=v=>'$'+Math.round(v).toLocaleString('en-US');
+const fmtK=v=>'$'+(v/1000).toFixed(1)+'k';
+
+function build(){
+ document.getElementById('tpane6').innerHTML=T7.map((a,i)=>`
+  <div class="trow6" id="TR-${a.id}" style="border-left-color:${a.c};height:56px">
+   <div class="tmain" onclick="rowTap(event,'${a.id}')">
+    <span class="tlogo" style="background:#8E8E99">${a.l}</span>
+    <span class="tmid"><b>${a.n}</b>
+     <span class="tsub"><span class="ta" style="color:${a.apr>=17?a.c:'#61616B'}">${a.apr?a.apr.toFixed(1)+'%':'0%'}</span> · <span class="tp">−$${a.pay.toLocaleString()}/mo</span></span></span>
+    <span class="kamt">${fmtK(a.bal)}</span>
+    <span class="chv"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+   </div>
+   <div class="tdet">
+    <div class="tgrid">
+     <div class="tg"><span>Balance</span><b>${fmt$(a.bal)}</b></div>
+     <div class="tg"><span>Rate</span><b>${a.apr?a.apr.toFixed(1)+'%':'0%'}</b></div>
+     <div class="tg"><span>Payment</span><b>${fmt$(a.pay)}/mo</b></div>
+     <div class="tg"><span>Interest left</span><b>${fmt$(acct(a).int)}</b></div>
+     <div class="tg"><span>Total cost</span><b>${fmt$(acct(a).tot)}</b></div>
+     <div class="tg"><span>Paid off in</span><b>${dur(acct(a).n)}</b></div>
+    </div>
+    <div class="tfit"><span class="fl">Fit score</span><span class="fm"><i style="width:${afit(a)}%;background:${a.c}"></i></span><span class="fv">${afit(a)}<small>/100</small></span></div>
+    <div class="tdiag">${a.d}</div>
+    ${a.m?`<div class="tinc" onclick="event.stopPropagation()">
+      <span class="t">Include in my plan<small id="is-${a.id}">part of the program</small></span>
+      <button class="sw on" id="sw-${a.id}" role="switch" aria-checked="true" onclick="incTap(event,'${a.id}')"></button>
+    </div>`:''}
+   </div>
+  </div>`).join('');
+}
+function baseRowH(){
+ if(open6.size)return 56;
+ const H=document.querySelector('.panes').clientHeight;
+ return Math.max(56,H/T7.length-6);
+}
+const rowH=id=>{if(!open6.has(id))return baseRowH();const d=document.querySelector('#TR-'+id+' .tdet');return 56+(d?d.offsetHeight:190);};
+
+function calc(){
+ const t=SETL[strat];
+ const inc=T7.filter(inProg);
+ const bal=inc.reduce((s,a)=>s+a.bal,0);
+ const mins=inc.reduce((s,a)=>s+a.pay,0);
+ const repay=bal*t.r, forg=bal-repay, stays=forg*STAYS_R, dep=repay/t.term;
+ return {inc,bal,mins,repay,forg,stays,dep,term:t.term};
+}
+function updateNums(){
+ const c=calc();
+ document.getElementById('vRepay').textContent='You repay just '+fmt$(c.repay);
+ document.getElementById('vForg').textContent=fmt$(c.forg)+' forgiven';
+ const dp=deep();
+ document.getElementById('gPay').textContent=fmt$(c.dep)+'/mo';
+ document.getElementById('gFree').textContent=new Date(2026,7+c.term,1).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+ document.getElementById('gRate').textContent=dp.blend.toFixed(1)+'%';
+ document.getElementById('gAcc').textContent=dp.accIn+' of '+dp.accAll;
+ document.getElementById('vStays').textContent=fmt$(c.stays)+' stays with you';
+ const kr=T7.filter(a=>!inProg(a));
+ document.getElementById('kt7').textContent='Kept as-is · −\u2060'+fmt$(kr.reduce((t,a)=>t+a.pay,0))+'/mo';
+ document.getElementById('kList').textContent=kr.map(a=>a.n+' '+(a.apr?a.apr.toFixed(1)+'%':'0%')).join(' · ')+'. Stays as it is today.';
+ paintTiles();
+ paintFit(false);
+ document.getElementById('inspTxt').innerHTML=opt
+  ?'<b>'+fmt$(c.forg)+'</b> forgiven. Start today.'
+  :'Up to <b>'+fmt$(c.forg)+'</b> could be forgiven.';
+}
+
+/* ================= the sankey ================= */
+function paneGeom(){
+ const pane=document.getElementById('panes6');
+ const W=pane.clientWidth, H=pane.clientHeight;
+ const oH=Math.round(H*0.70), kY=oH+10, kH=H-kY-2;
+ /* the cards line up exactly with the strategy dropdown below them */
+ const pr=pane.getBoundingClientRect(), sr=document.querySelector('.selwrap').getBoundingClientRect();
+ let BX=Math.round(sr.left-pr.left), bw=Math.round(sr.width);
+ if(!(bw>40)){BX=Math.round(W*0.36);bw=W-BX-20;}
+ return {pane,W,H,oH,kY,kH,BX,bw};
+}
+/* fuse the slivers into the same 2 groups as the cards (like the slide-over) */
+function groupRows(){
+ const g=paneGeom();
+ const inc=T7.filter(inProg).map(a=>a.id);
+ const exc=T7.filter(a=>!inProg(a)).map(a=>a.id);
+ [...inc,...exc].forEach((id,i)=>{
+  const el=document.getElementById('TR-'+id);
+  el.style.order=i;
+  const grp=inc.includes(id)?inc:exc;
+  const gi=grp.indexOf(id), first=gi===0, last=gi===grp.length-1;
+  el.style.borderRadius=(first&&last)?'12px':first?'12px 12px 0 0':last?'0 0 12px 12px':'0';
+  el.style.borderTopWidth=first?'1px':'0px';
+  el.style.borderBottomWidth=last?'1px':'0px';
+  el.style.marginBottom=(last&&grp===inc&&exc.length)?(g.kY-g.oH)+'px':last?'0px':'0px';
+  el.style.height=(grp===inc?g.oH/Math.max(1,inc.length):g.kH/Math.max(1,exc.length))+'px';
+ });
+}
+function ungroupRows(){
+ T7.forEach(a=>{
+  const el=document.getElementById('TR-'+a.id);
+  el.style.order='';el.style.marginBottom='';el.style.borderRadius='';
+  el.style.borderTopWidth='';el.style.borderBottomWidth='';
+ });
+}
+function drawSankey(){
+ const c=calc();
+ const g=paneGeom();
+ const W=g.W, H=g.H;
+ const svg=document.getElementById('sank');
+ svg.setAttribute('viewBox','0 0 '+W+' '+H);
+ svg.innerHTML=`<defs>
+  <linearGradient id="gin" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#EFEFF5"/><stop offset="1" stop-color="#D3D3E2"/></linearGradient>
+  <linearGradient id="gre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7C6FF7"/><stop offset="1" stop-color="#5B3DF7"/></linearGradient>
+  <linearGradient id="gfo" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9ED4B4"/><stop offset="1" stop-color="#5FA97C"/></linearGradient>
+ </defs>`;
+ const LX=76, BX=g.BX, bw=g.bw;
+ const oc=document.getElementById('oCard'),kc=document.getElementById('kCard');
+ oc.style.left=BX+'px';oc.style.top='0px';oc.style.width=bw+'px';oc.style.height=g.oH+'px';
+ kc.style.left=BX+'px';kc.style.top=g.kY+'px';kc.style.width=bw+'px';kc.style.height=g.kH+'px';
+ const pr=g.pane.getBoundingClientRect();
+ const inc=c.inc, exc=T7.filter(a=>!inProg(a));
+ /* left→right wipe so each ribbon visibly flows into its destination */
+ const wipe=(el,delay,dur)=>{
+  el.style.clipPath='inset(-3% 100% -3% 0)';
+  el.style.transition='clip-path '+(dur||650)+'ms cubic-bezier(.45,.05,.2,1)';
+  setTimeout(()=>{el.style.clipPath='inset(-3% -3% -3% -3%)'},delay);
+ };
+ if(c.bal>0){
+  /* creditors → straight into the offer card (no waist) */
+  const pad=10, span=g.oH-2*pad;
+  let acc=0;
+  inc.forEach((a,i)=>{
+   const r=document.getElementById('TR-'+a.id).querySelector('.tlogo').getBoundingClientRect();
+   const t0=r.top-pr.top, t1=r.bottom-pr.top;
+   const s0=pad+(acc/c.bal)*span, s1=pad+((acc+a.bal)/c.bal)*span;
+   acc+=a.bal;
+   const mx=(LX+BX)/2;
+   const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+   p.setAttribute('d',`M ${LX} ${t0} C ${mx} ${t0}, ${mx} ${s0}, ${BX} ${s0} L ${BX} ${s1} C ${mx} ${s1}, ${mx} ${t1}, ${LX} ${t1} Z`);
+   p.setAttribute('fill','url(#gin)');p.setAttribute('opacity','0.85');
+   svg.appendChild(p);
+   wipe(p,60+i*90,620);
+  });
+ }
+ /* kept → kept card: grey dashed stubs */
+ exc.forEach((a,i)=>{
+  const r=document.getElementById('TR-'+a.id).getBoundingClientRect();
+  const cy=r.top+r.height/2-pr.top;
+  const ky=g.kY+g.kH/2+(i-(exc.length-1)/2)*14;
+  const mx=(LX+BX)/2;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',`M ${LX} ${cy} C ${mx} ${cy}, ${mx} ${ky}, ${BX} ${ky}`);
+  p.setAttribute('fill','none');p.setAttribute('stroke','#C9C9DE');p.setAttribute('stroke-width','2.5');
+  p.setAttribute('stroke-dasharray','4 5');p.setAttribute('opacity','0.8');
+  svg.appendChild(p);
+  wipe(p,650+i*90,600);
+ });
+ oc.classList.remove('loading');kc.classList.remove('loading');
+ oc.classList.add('show');kc.classList.add('show');
+ setTimeout(()=>{oc.classList.add('live')},60);
+ setTimeout(()=>{kc.classList.add('live')},180);
+}
+function clearSankey(){
+ document.getElementById('sank').innerHTML='';
+ document.getElementById('oCard').classList.remove('show','live');
+ document.getElementById('kCard').classList.remove('show','live');
+}
+
+/* ================= layout / interactions ================= */
+function layout(){
+ const W=document.querySelector('.app').clientWidth;
+ const tp=document.getElementById('tpane6');
+ const gp=document.getElementById('gpane');
+ /* ghost hint mirrors the real optimized layout */
+ const g=paneGeom();
+ const gO=document.getElementById('gOff'),gK=document.getElementById('gKept');
+ gO.style.top='0px';gO.style.height=g.oH+'px';
+ gK.style.top=g.kY+'px';gK.style.height=g.kH+'px';
+ if(!opt){
+  tp.style.width=(W-116)+'px';
+  tp.classList.remove('sank');
+  tp.style.display='';
+  ungroupRows();
+  T7.forEach(a=>{const el=document.getElementById('TR-'+a.id);el.style.height=rowH(a.id)+'px';el.style.borderLeftColor=a.c;});
+  setTimeout(()=>{if(!opt)T7.forEach(a=>{document.getElementById('TR-'+a.id).style.height=rowH(a.id)+'px';});},480);
+  clearSankey();
+  clearTimeout(revealT);
+  gp.classList.remove('loading');
+  document.getElementById('gm1').textContent='Your offer';
+  gp.style.visibility='visible';gp.style.left=(W-72)+'px';gp.style.width=(W-108)+'px';gp.style.opacity='1';
+  shown=false;
+  document.getElementById('droprow').classList.remove('ready');
+ } else {
+  gp.style.left=g.BX+'px';gp.style.width=g.bw+'px';gp.style.opacity='1';
+  gp.classList.add('loading');
+  document.getElementById('gm1').textContent='Finding your best offer…';
+  tp.style.width='54px';
+  tp.classList.add('sank');
+  tp.style.display='flex';tp.style.flexDirection='column';
+  groupRows();
+  setTimeout(()=>{if(opt)groupRows();},480);
+  clearTimeout(revealT);
+  revealT=setTimeout(()=>{
+   if(!opt)return;
+   gp.classList.remove('loading');gp.style.visibility='hidden';gp.style.opacity='0';
+   drawSankey();onRevealed();
+  },pendingLoad||700);
+  pendingLoad=0;
+ }
+ document.getElementById('sg6c').classList.toggle('on',!opt);
+ document.getElementById('sg6o').classList.toggle('on',opt);
+ document.getElementById('droprow').classList.toggle('hid',!opt);
+ document.getElementById('panes6').classList.toggle('tall',!opt);
+ updateNums();
+}
+let pendingLoad=0;
+function setOpt(v){
+ if(opt===v)return;opt=v;
+ if(opt)document.getElementById('seg6').classList.remove('hint');
+ if(opt){
+  open6.forEach(id=>document.getElementById('TR-'+id).classList.remove('open'));open6.clear();
+  pendingLoad=LOAD_MS;runLoader();
+ } else {pendingLoad=0;stopLoader();}
+ layout();
+}
+function rowTap(e,id){
+ e.stopPropagation();
+ if(opt)return;
+ open6.has(id)?open6.delete(id):open6.add(id);
+ document.getElementById('TR-'+id).classList.toggle('open',open6.has(id));
+ layout();
+}
+function incTap(e,id){
+ e.stopPropagation();
+ excl6.has(id)?excl6.delete(id):excl6.add(id);
+ const off=excl6.has(id);
+ document.getElementById('sw-'+id).classList.toggle('on',!off);
+ document.getElementById('sw-'+id).setAttribute('aria-checked',!off);
+ document.getElementById('TR-'+id).classList.toggle('off',off);
+ document.getElementById('is-'+id).textContent=off?'left out, stays as it is today':'part of the program';
+ if(opt){groupRows();document.getElementById('sank').innerHTML='';setTimeout(drawSankey,480);}
+ updateNums();
+}
+function setStrat(v){
+ document.getElementById('droprow').classList.add('used');
+ strat=v;updateNums();
+ if(opt){
+  const oc=document.getElementById('oCard'),kc=document.getElementById('kCard');
+  document.getElementById('sank').innerHTML='';
+  oc.classList.remove('live');kc.classList.remove('live');
+  oc.classList.add('loading');kc.classList.add('loading');
+  groupRows();
+  clearTimeout(revealT);
+  revealT=setTimeout(()=>{if(opt){drawSankey();paintFit(true);}},1400);
+ }
+}
+/* ===== slot-machine tile numbers ===== */
+function slot(el,txt){
+ if(el.dataset.v===txt)return;
+ const first=!el.dataset.v;
+ el.dataset.v=txt;
+ el.innerHTML='';
+ [].forEach.call(txt,(ch,i)=>{
+  if(ch>='0'&&ch<='9'){
+   const cell=document.createElement('i');cell.className='dg';
+   const strip=document.createElement('b');
+   for(let k=0;k<20;k++){const u=document.createElement('u');u.textContent=k%10;strip.appendChild(u);}
+   cell.appendChild(strip);el.appendChild(cell);
+   const end=(10+(+ch))*5;
+   if(first){strip.style.transform='translateY(-'+end+'%)';}
+   else{
+    strip.style.transform='translateY(-'+((+ch)*5)+'%)';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+     strip.style.transition='transform '+(580+i*60)+'ms cubic-bezier(.22,.68,.24,1)';
+     strip.style.transform='translateY(-'+end+'%)';
+    }));
+   }
+  } else {
+   const s=document.createElement('i');s.className='ch';s.textContent=ch;el.appendChild(s);
+  }
+ });
+}
+/* the four tiles: today's numbers, then the optimized ones with the saving in green */
+function paintTiles(){
+ const c=calc();
+ const mo=n=>new Date(2026,7+n,1).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+ const rows=shown?[
+  ['Monthly deposit', fmt$(c.dep),   'save '+fmt$(Math.round(c.mins)-Math.round(c.dep))+'/mo'],
+  ['You repay',       fmt$(c.repay), fmt$(c.forg)+' forgiven'],
+  ['Debt-free*',      mo(c.term),    ((BASELINE_M-c.term)/12).toFixed(1)+' yrs sooner'],
+  ['Stays with you',  fmt$(c.stays), 'vs paying minimums']
+ ]:[
+  ['Monthly outlay',  fmt$(c.mins),  'in minimums today'],
+  ['Balance owed',    fmt$(c.bal),   'across your plan'],
+  ['Debt-free*',      mo(BASELINE_M),'paying minimums'],
+  ['Stays with you',  '$0',          'every dollar goes out']
+ ];
+ document.querySelector('.tiles6').classList.toggle('win',shown);
+ [].forEach.call(document.querySelectorAll('.tile6'),(el,i)=>{
+  el.querySelector('.tl6').textContent=rows[i][0];
+  slot(el.querySelector('.tv6'),rows[i][1]);
+  el.querySelector('.ts6').textContent=rows[i][2];
+ });
+}
+/* ===== per-tradeline math, shown in the accordion ===== */
+function acct(a){
+ const r=a.apr/1200;
+ if(!(a.pay>0))return {n:0,tot:a.bal,int:0};
+ if(r<=0)return {n:a.bal/a.pay,tot:a.bal,int:0};
+ if(a.pay<=a.bal*r)return {n:600,tot:a.pay*600,int:a.pay*600-a.bal};
+ const n=-Math.log(1-r*a.bal/a.pay)/Math.log(1+r);
+ return {n,tot:a.pay*n,int:a.pay*n-a.bal};
+}
+const dur=n=>{const m=Math.round(n);return m<12?m+' mo':Math.floor(m/12)+' yr'+(m%12?' '+(m%12)+' mo':'');};
+function afit(a){
+ const m=acct(a);
+ const apr=Math.min(1,a.apr/26);                              /* how expensive the money is */
+ const drag=Math.min(1,(m.int/Math.max(1,a.bal))/0.55);       /* interest burden vs balance */
+ let v=100*(0.78*apr+0.22*drag);
+ if(!a.m)v*=0.45;                                             /* cheap or secured debt is a poor candidate */
+ return Math.max(4,Math.min(100,Math.round(v)));
+}
+/* ===== fit score: how well this program fits what you owe ===== */
+function fitScore(){
+ const c=calc();
+ const elig=T7.filter(a=>a.m||SETL[strat].extra.includes(a.id)).reduce((s,a)=>s+a.bal,0);
+ const cov=elig>0?c.bal/elig:0;                                  /* how much of the eligible debt is in */
+ const rel=c.mins>0?Math.min(1,(1-c.dep/c.mins)/0.6):0;          /* monthly relief */
+ const frg=c.bal>0?Math.min(1,(c.forg/c.bal)/0.40):0;            /* share forgiven */
+ return Math.max(0,Math.min(100,Math.round(100*(0.5*cov+0.3*rel+0.2*frg))));
+}
+function paintFit(anim){
+ const v=fitScore(), bar=document.getElementById('fBar');
+ document.getElementById('fNum').textContent=v;
+ if(anim){bar.style.width='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.width=v+'%'}));}
+ else bar.style.width=v+'%';
+}
+function onRevealed(){
+ document.getElementById('droprow').classList.add('ready');
+ shown=true;paintTiles();
+ paintFit(true);
+}
+/* ===== loading carousel (shared, identical in both prototypes) ===== */
+const LOAD_MS=8800, SLIDE_MS=2100;
+function loadSlides(){
+ const c=calc();
+ const mo=n=>new Date(2026,7+n,1).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+ return [
+  {e:'Your money',h:'Every number you carry has an optimized twin.',
+   l:['Monthly outlay',fmt$(c.mins),'leaking every month'],
+   r:['Monthly deposit',fmt$(c.dep),'\u2212'+fmt$(Math.round(c.mins)-Math.round(c.dep))+'/mo recovered'],
+   c:'Four metrics, twinned. Today on top, your plan below.'},
+  {e:'What you owe',h:'You may not have to repay all of it.',
+   l:['Balance today',fmt$(c.bal),'owed across your plan'],
+   r:['You repay',fmt$(c.repay),fmt$(c.forg)+' forgiven'],
+   c:'We negotiate with your creditors, so the balance you settle is smaller.'},
+  {e:'Your time',h:'Years come off the back end.',
+   l:['Debt-free',mo(BASELINE_M),'paying minimums'],
+   r:['Debt-free',mo(c.term),((BASELINE_M-c.term)/12).toFixed(1)+' yrs sooner'],
+   c:'One deposit each month replaces the slow grind of minimum payments.'},
+  {e:'What you keep',h:'The difference stays with you.',
+   l:['Stays with you','$0','every dollar goes out'],
+   r:['Stays with you',fmt$(c.stays),'vs paying minimums'],
+   c:'Money that would have gone to interest and fees, kept instead.'}
+ ];
+}
+let loadT=[];
+function stopLoader(){
+ loadT.forEach(clearTimeout);loadT=[];
+ document.getElementById('lslide').classList.remove('on');
+}
+function runLoader(){
+ const S=loadSlides(), wrap=document.getElementById('lslide'), sl=document.getElementById('lbody');
+ loadT.forEach(clearTimeout);loadT=[];
+ wrap.classList.add('on');
+ const set=(id,v)=>{document.getElementById(id).textContent=v;};
+ const paint=i=>{
+  const s=S[i];
+  sl.classList.remove('in');
+  loadT.push(setTimeout(()=>{
+   set('lEy',s.e);set('lHd',s.h);
+   set('lL1',s.l[0]);set('lV1',s.l[1]);set('lS1',s.l[2]);
+   set('lL2',s.r[0]);set('lV2',s.r[1]);set('lS2',s.r[2]);
+   set('lCap',s.c);
+   [].forEach.call(document.getElementById('lDots').children,(d,j)=>d.classList.toggle('on',j===i));
+   sl.classList.add('in');
+  },260));
+ };
+ paint(0);
+ for(let i=1;i<S.length;i++)loadT.push(setTimeout(()=>paint(i),i*SLIDE_MS));
+ loadT.push(setTimeout(()=>{wrap.classList.remove('on')},LOAD_MS-420));
+}
+/* ===== the full picture, behind a tap on the offer card ===== */
+function deep(){
+ const c=calc(), inc=c.inc;
+ return {c,
+  allBal:T7.reduce((s,a)=>s+a.bal,0),
+  accAll:T7.length, accIn:inc.length,
+  blend:c.bal>0?inc.reduce((s,a)=>s+a.bal*a.apr,0)/c.bal:0,
+  int0:inc.reduce((s,a)=>s+acct(a).int,0),
+  drag:inc.reduce((s,a)=>s+a.bal*a.apr/1200,0)};
+}
+function openSheet(){
+ const d=deep(), c=d.c;
+ const mo=n=>new Date(2026,7+n,1).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+ const R=[
+  ['Total debt','every account you carry',null,fmt$(d.allBal),0],
+  ['Total accounts','moving into the program',null,d.accIn+' of '+d.accAll,0],
+  ['Total amount','entering the program',null,fmt$(c.bal),0],
+  ['Blended rate','weighted by balance',d.blend.toFixed(1)+'%','0%',1],
+  ['Total interest','what carrying it costs',fmt$(d.int0),'$0',1],
+  ['Payment','replaces your minimums',fmt$(c.mins)+'/mo',fmt$(c.dep)+'/mo',1],
+  ['Total cost','what you actually pay',fmt$(c.bal+d.int0),fmt$(c.repay),1],
+  ['Debt free','estimated, '+((BASELINE_M-c.term)/12).toFixed(1)+' years sooner',mo(BASELINE_M),mo(c.term),1],
+  ['Liability drag','bleeding out every month',fmt$(d.drag)+'/mo','$0/mo',1]
+ ];
+ document.getElementById('sbody').innerHTML=R.map(r=>
+  '<div class="srow"><span class="sl"><b>'+r[0]+'</b><i>'+r[1]+'</i></span>'+
+  '<span class="sv">'+(r[2]?'<span class="was">'+r[2]+'</span><span class="arw">\u2192</span>':'')+
+  '<span class="now'+(r[4]?' g':'')+'">'+r[3]+'</span></span></div>').join('');
+ const v=fitScore(), sb=document.getElementById('sfBar');
+ document.getElementById('sfNum').textContent=v;
+ sb.style.width='0%';
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{sb.style.width=v+'%';}));
+ document.getElementById('scrim').classList.add('on');
+ document.getElementById('sheet').classList.add('on');
+}
+function closeSheet(){
+ document.getElementById('scrim').classList.remove('on');
+ document.getElementById('sheet').classList.remove('on');
+}
+document.getElementById('oCard').addEventListener('click',e=>{e.stopPropagation();if(shown)openSheet();});
+document.getElementById('scrim').addEventListener('click',closeSheet);
+document.getElementById('sheetX').addEventListener('click',e=>{e.stopPropagation();closeSheet();});
+document.getElementById('bigCta').addEventListener('click',e=>e.stopPropagation());
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+/* the pane absorbs the strategy row's space when it is hidden, so the
+   tiles never move and there is no dead gap above them */
+(function(){
+ const d=document.getElementById('droprow'), had=d.classList.contains('hid');
+ const t=d.style.transition; d.style.transition='none';
+ d.classList.remove('hid');
+ const h=d.offsetHeight;
+ if(had)d.classList.add('hid');
+ void d.offsetWidth; d.style.transition=t;
+ document.documentElement.style.setProperty('--dropH',h+'px');
+})();
+/* in-page dropdown: a native <select> popup is positioned by the browser
+   outside the page's coordinate space, so it lands wrong when the artifact
+   frame is scaled */
+(function(){
+ const wrap=document.querySelector('.selwrap'), btn=document.getElementById('stratBtn'),
+       menu=document.getElementById('stratMenu'), row=document.getElementById('droprow');
+ const setOpen=v=>{
+  wrap.classList.toggle('open',v);
+  row.classList.toggle('menuopen',v);
+  btn.setAttribute('aria-expanded',v?'true':'false');
+ };
+ btn.addEventListener('click',e=>{e.stopPropagation();setOpen(!wrap.classList.contains('open'));});
+ menu.addEventListener('click',e=>{
+  const o=e.target.closest('.selopt'); if(!o)return;
+  e.stopPropagation();
+  [].forEach.call(menu.children,x=>{const on=x===o;x.classList.toggle('on',on);x.setAttribute('aria-selected',on);});
+  document.getElementById('stratLbl').textContent=o.textContent;
+  setOpen(false);
+  setStrat(o.dataset.v);
+ });
+ document.addEventListener('click',()=>setOpen(false));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+})();
+document.getElementById('sg6c').addEventListener('click',()=>setOpt(false));
+document.getElementById('sg6o').addEventListener('click',()=>setOpt(true));
+window.addEventListener('resize',()=>{if(opt){clearSankey();drawSankey();}layout();});
+
+build();layout();
+</script>
+</body>
+</html>

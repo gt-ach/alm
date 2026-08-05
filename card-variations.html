@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debt Card & Offer Card · 6 Density Variations · UserTesting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Achieve brand face — Ultramarine (as served by achieve.com) =====
+   Three weights exist: Regular 400 · Medium 500 · Bold 700. No 600/800.
+   local() hits first for anyone with the licensed font installed; the remote
+   woff2 is achieve.com's own path (it sends no CORS header, so off-domain it
+   will decline and drop to the metric-matched Arial fallback below — which is
+   exactly the fallback achieve.com itself generates). */
+@font-face{font-family:'Ultramarine';font-style:normal;font-weight:400;font-display:swap;
+  src:local('Ultramarine'),local('Ultramarine Regular'),local('Ultramarine-Regular'),
+      url('https://www.achieve.com/_next/static/media/Ultramarine_Regular-s.p.2kh3uqhmlq0nz.woff2') format('woff2')}
+@font-face{font-family:'Ultramarine';font-style:normal;font-weight:500;font-display:swap;
+  src:local('Ultramarine Medium'),local('Ultramarine-Medium'),
+      url('https://www.achieve.com/_next/static/media/Ultramarine_Medium-s.p.3orqa49f8qydf.woff2') format('woff2')}
+@font-face{font-family:'Ultramarine';font-style:normal;font-weight:700;font-display:swap;
+  src:local('Ultramarine Bold'),local('Ultramarine-Bold'),
+      url('https://www.achieve.com/_next/static/media/Ultramarine_Bold-s.p.25sj6i1vwxhnd.woff2') format('woff2')}
+/* metric-matched fallback, values lifted from achieve.com's own @font-face */
+@font-face{font-family:'Ultramarine Fallback';src:local('Arial');
+  ascent-override:93.12%;descent-override:29.1%;line-gap-override:0%;size-adjust:106.53%}
+</style>
+<style>
+/* ============ tokens (verbatim from Debt Navigator prototype) ============ */
+:root{
+  --blue:#1f5fa6; --blue-d:#17497f; --blue-t:#e8f0f9; --blue-t2:#d5e4f4;
+  --ink:#152638; --mut:#5b6d84; --faint:#8fa0b5;
+  --bg:#f3f6fa; --card:#ffffff; --line:#dfe7f0;
+  --jade:#0e9f6e; --jade-d:#0b7f58; --jade-t:#e2f6ee;
+  --red:#d64545; --red-t:#fdeaea;
+  --amber:#dd8f10; --amber-t:#fdf3e2;
+  --r:14px; --shadow:0 1px 2px rgba(21,38,56,.05),0 6px 18px rgba(21,38,56,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#ffffff;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 20px 60px}
+button{font-family:inherit}
+
+/* ============ gallery chrome ============ */
+.pagehead{max-width:1400px;margin:0 auto 26px}
+.pagehead .kick{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--blue)}
+.pagehead h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:4px}
+.pagehead p{font-size:13px;color:var(--mut);font-weight:600;margin-top:6px;line-height:1.5;max-width:760px}
+.sect{max-width:1400px;margin:0 auto 40px}
+.sect > .sh{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.sect > .sh h2{font-size:17px;font-weight:800;letter-spacing:-.015em}
+.sect > .sh .src{font-size:11px;color:var(--faint);font-weight:600}
+.sect > .note{font-size:12px;color:var(--mut);font-weight:600;margin-bottom:10px}
+.legend{display:flex;gap:14px;margin-bottom:14px;font-size:11px;color:var(--mut);font-weight:700}
+.legend i{width:9px;height:9px;border-radius:99px;display:inline-block;margin-right:5px}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+@media(min-width:2050px){.rail{grid-template-columns:repeat(6,1fr)}}
+.cell{background:#ffffff;border:1px solid var(--line);border-radius:18px;padding:14px}
+.cell .vh{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.cell .vnum{font-size:11px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--ink);padding:3px 9px;border-radius:999px}
+.cell .vname{font-size:12.5px;font-weight:800}
+.cell .adds{font-size:10.5px;color:var(--mut);font-weight:600;line-height:1.45;margin-bottom:12px;min-height:30px}
+.cell .adds b{color:var(--blue-d)}
+.cell .adds .rr{color:var(--red);font-weight:800}
+.cell .adds .aa{color:var(--amber);font-weight:800}
+.cell .adds .bb{color:var(--blue-d);font-weight:800}
+.stagebox{max-width:402px}
+.stagebox .tl,.stagebox .tlx{margin-bottom:8px}
+.stagebox .tl:last-child,.stagebox .tlx:last-child{margin-bottom:0}
+
+/* ============ shared primitives (from prototype) ============ */
+.tag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:3px 7px;border-radius:999px}
+.tag.red{background:var(--red-t);color:var(--red)} .tag.amber{background:var(--amber-t);color:var(--amber)} .tag.ok{background:var(--blue-t);color:var(--blue-d)}
+.sev-red{color:var(--red)!important}
+.sev-amber{color:var(--amber)!important}
+.sev-ok{color:var(--blue-d)!important}
+.sev-jade{color:var(--jade)!important}
+
+/* ---- debt card, compact row ---- */
+.tl{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;box-shadow:var(--shadow);display:flex;align-items:center;gap:11px}
+.tl.f-red,.tlx.f-red{border-left-width:4px;border-left-color:var(--red)}
+.tl.f-amber,.tlx.f-amber{border-left-width:4px;border-left-color:var(--amber)}
+.tl.f-ok,.tlx.f-ok{border-left-width:4px;border-left-color:var(--blue)}
+.ic{width:34px;height:34px;border-radius:10px;background:var(--blue-t);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ic svg{width:17px;height:17px;stroke:var(--blue-d)}
+.ic.red{background:var(--red-t)} .ic.red svg{stroke:var(--red)}
+.ic.amber{background:var(--amber-t)} .ic.amber svg{stroke:var(--amber)}
+.tl .mid,.tlx .mid{flex:1;min-width:0}
+.grpk{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:2px}
+.nm{font-size:13.5px;font-weight:700}
+.dt{font-size:11px;color:var(--mut);margin-top:2px;font-weight:600}
+.dt b{font-weight:800}
+.rt{text-align:right}
+.bal{font-size:14px;font-weight:800}
+.rt .tag{margin-top:3px}
+
+/* ---- debt card, stacked (V5–V6) ---- */
+.tlx{background:var(--card);border:1.5px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.tlx.wash.f-red{background:linear-gradient(180deg,#fff 55%,#fdf6f6)}
+.tlx.wash.f-amber{background:linear-gradient(180deg,#fff 55%,#fdf9f0)}
+.tlx.wash.f-ok{background:linear-gradient(180deg,#fff 55%,#f4f8fc)}
+.tlx .toprow{padding:11px 12px;display:flex;align-items:center;gap:11px}
+.tlx .teas{display:flex;border-top:1px solid var(--line);margin:0 12px;padding:10px 0 11px}
+.tlx .teas .t{flex:1;text-align:center}
+.tlx .teas .t + .t{border-left:1px solid var(--line)}
+.tlx .teas .tv{font-size:13px;font-weight:800}
+.tlx .teas .tl2{font-size:9px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.tlx .proj{margin:0 12px;border-top:1px solid var(--line);padding:9px 0 11px;font-size:11px;color:var(--mut);font-weight:600;line-height:1.5}
+.tlx .proj b{color:var(--ink)}
+.tlx .proj .warn{color:var(--red);font-weight:700}
+.tlx .proj .good{color:var(--jade);font-weight:700}
+.tlx .actrow{display:flex;gap:8px;padding:0 12px 12px}
+.abtn{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:11px;padding:9px 8px;cursor:pointer;font-size:11.5px;font-weight:700;color:var(--mut);display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s}
+.abtn.pri{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 4px 12px rgba(31,95,166,.3)}
+.abtn.warn{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 4px 12px rgba(214,69,69,.3)}
+.abtn.amb{background:var(--amber);border-color:var(--amber);color:#fff;box-shadow:0 4px 12px rgba(221,143,16,.3)}
+.abtn.quiet{cursor:default;color:var(--faint)}
+.abtn svg{width:14px;height:14px;stroke:currentColor}
+
+/* ---- offer card (SmartMove) ---- */
+.mcard{background:var(--card);border:1.5px solid #bcd7f0;border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.mtop{padding:13px 13px 12px}
+.mkick{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.mkick .k{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)}
+.mkick .st{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-left:auto;background:var(--blue-t);color:var(--blue-d)}
+.mname{font-size:15px;font-weight:800;letter-spacing:-.015em}
+.mwhy{font-size:12px;color:var(--mut);font-weight:600;margin-top:3px;line-height:1.45}
+.mwhy .from{color:var(--red);font-weight:800}
+.mwhy .to{color:var(--jade);font-weight:800}
+.mteas{display:flex;border-top:1px solid var(--line);margin-top:11px;padding-top:10px}
+.mteas .t{flex:1;text-align:center}
+.mteas .t + .t{border-left:1px solid var(--line)}
+.mteas .tv{font-size:13.5px;font-weight:800}
+.mteas .tv.jade{color:var(--jade)}
+.mteas .tl2{font-size:9px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.inner{padding:0 13px 13px}
+.inner.rule{border-top:1px solid var(--line)}
+.maplab{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin:12px 0 7px}
+.mapln{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--line)}
+.mapln:last-of-type{border-bottom:0}
+.fdot{width:8px;height:8px;border-radius:99px;flex:none}
+.fdot.red{background:var(--red)} .fdot.amber{background:var(--amber)} .fdot.ok{background:var(--blue)} .fdot.jade{background:var(--jade)}
+.mapln .mn2{flex:1;font-size:12px;font-weight:700}
+.mapln .mn2 span{display:block;font-size:10px;color:var(--faint);font-weight:600;margin-top:1px}
+.mapln .mn2 span .hot{color:var(--red);font-weight:800}
+.mapln .arrow{color:var(--faint)}
+.mapln .after{font-size:12px;font-weight:800;text-align:right}
+.mapln .after s{color:var(--faint);font-weight:600;margin-right:5px}
+.mapln .after .nw{color:var(--jade)}
+.proof{background:var(--blue-t);border-radius:11px;padding:10px 12px;margin-top:11px;font-size:11.5px;color:var(--blue-d);font-weight:600;line-height:1.55}
+.proof b{font-weight:800}
+.proof .from{color:var(--red)}
+.proof .to{color:var(--jade)}
+.dili{border:1.5px dashed var(--blue-t2);border-radius:11px;margin-top:11px;overflow:hidden}
+.dili > button{width:100%;text-align:left;background:none;border:0;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.dili .dt2{flex:1}
+.dili .dh{font-size:12px;font-weight:800;color:var(--ink)}
+.dili .ds{font-size:10.5px;color:var(--mut);font-weight:600;margin-top:1px}
+.dili .chev{color:var(--faint);transition:transform .3s}
+.dili.open .chev{transform:rotate(180deg)}
+.dili .dbody{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.dili.open .dbody{max-height:600px}
+.dili .dinner{padding:0 12px 11px}
+.ruled{display:flex;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.ruled .x{width:16px;height:16px;border-radius:99px;background:var(--red-t);color:var(--red);display:grid;place-items:center;flex:none;margin-top:1px}
+.ruled .x svg{width:9px;height:9px}
+.ruled .rn{font-size:11.5px;font-weight:800}
+.ruled .rw{font-size:10.5px;color:var(--mut);font-weight:600;line-height:1.45;margin-top:1px}
+.mcta{margin-top:12px}
+.ctalink{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--blue);text-decoration:none;cursor:pointer}
+.ctalink:hover{color:var(--blue-d);text-decoration:underline}
+.ctalink svg{width:15px;height:15px;stroke:currentColor}
+.ctasub{text-align:left;font-size:10.5px;color:var(--faint);font-weight:600;margin-top:5px}
+.fitchip{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border-radius:9px;padding:3px 8px;box-shadow:0 2px 8px rgba(31,95,166,.3)}
+.fitchip .fn{font-size:13px;font-weight:800;letter-spacing:-.02em}
+.fitchip .fl{font-size:7px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85;line-height:1.2;text-align:left}
+.mkick .fitchip{margin-left:auto}
+.mkick .fitchip ~ .st{margin-left:7px}
+.namerow{display:flex;align-items:flex-start;gap:8px}
+.namerow .mname{flex:1}
+.namerow .fitchip{flex:none;margin-top:1px}
+.ctasub b{color:var(--mut)}
+.ghostrow{display:flex;gap:8px;margin-top:9px}
+.gbtn{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:11px;padding:9px 8px;cursor:pointer;font-size:11.5px;font-weight:700;color:var(--mut);display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s}
+.gbtn svg{width:14px;height:14px;stroke:currentColor}
+
+.footnote{max-width:1400px;margin:0 auto;font-size:10px;color:var(--faint);font-weight:500;line-height:1.6}
+
+/* ---- full-spec cards ---- */
+.tlx.f-jade{border-left-width:4px;border-left-color:var(--jade)}
+.tag.jade{background:var(--jade-t);color:var(--jade-d)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);row-gap:13px;column-gap:6px;border-top:1px solid var(--line);margin:0 12px;padding:12px 0}
+.tile{text-align:center;min-width:0}
+.tile .v{font-size:12.5px;font-weight:800;letter-spacing:-.01em}
+.tile .was{display:block;font-size:9px;color:var(--faint);text-decoration:line-through;font-weight:600;margin-bottom:1px}
+.tile .l{font-size:8.5px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:2px;line-height:1.3}
+.sumhead{padding:12px 12px 10px}
+.sumhead .k2{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.sumhead .k2.jd{color:var(--jade-d)}
+.sumhead .h2x{font-size:15px;font-weight:800;letter-spacing:-.015em;margin-top:2px}
+.sumhead .s2{font-size:11px;color:var(--mut);font-weight:600;margin-top:2px}
+/* Design B — statement ledger */
+.stmt{background:var(--ink);border-radius:var(--r);color:#fff;padding:14px 15px;box-shadow:var(--shadow)}
+.stmt .sk{font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#8fa0b5}
+.stmt .sk .pill{float:right;background:rgba(255,255,255,.1);border-radius:999px;padding:2px 8px;color:#cfe0f2}
+.stmt .sk .pill.jd{background:rgba(14,159,110,.28);color:#7fe5bd}
+.stmt .snm{font-size:15.5px;font-weight:800;letter-spacing:-.015em;margin:3px 0 8px}
+.stmt .srow{display:flex;align-items:baseline;gap:8px;padding:6.5px 0;border-bottom:1px dashed rgba(255,255,255,.13);font-size:11.5px}
+.stmt .srow:last-of-type{border-bottom:0}
+.stmt .lb{color:#9db0c5;font-weight:600;flex:none}
+.stmt .ld{flex:1;border-bottom:1px dotted rgba(255,255,255,.18);transform:translateY(-3px)}
+.stmt .vl{font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+.stmt .vl .w2{color:#7d8fa5;text-decoration:line-through;font-weight:600;font-size:10px;margin-right:6px}
+.vl.rd{color:#ff9494} .vl.jd{color:#63dcab} .vl.am{color:#ffc46b}
+.stmt .fitbig{display:flex;align-items:center;gap:11px;margin-top:11px;background:rgba(255,255,255,.07);border-radius:11px;padding:9px 12px}
+.stmt .fitbig .num{font-size:22px;font-weight:800;color:#8ec5ff}
+.stmt .fitbig .fx{font-size:10px;color:#9db0c5;font-weight:600;line-height:1.45}
+.stmt .fitbig .fx b{color:#fff;display:block;font-size:11px}
+
+/* ============ Design C — editorial large-type set (namespaced .c*) ============ */
+.csect{--ff:'Ultramarine','Ultramarine Fallback',Arial,Helvetica,sans-serif;font-family:var(--ff)}
+.csect .crail{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:22px;align-items:start}
+.csect .cell{border-radius:22px;padding:16px}
+.csect .cell .vname{font-size:14px}
+.csect .cell .adds{font-size:12px;min-height:34px}
+/* keep this section's chrome inside Ultramarine's 400/500/700 range too */
+.csect .sh h2,.csect .vnum,.csect .vname,.csect .adds b,.csect .adds .rr,.csect .adds .aa,.csect .adds .bb,.csect .legend{font-weight:700}
+.csect .adds,.csect .note,.csect .sh .src{font-weight:500}
+.ccard{background:#fff;border:1px solid #e4ebf3;border-radius:20px;overflow:hidden;
+  box-shadow:0 2px 4px rgba(21,38,56,.04),0 16px 40px rgba(21,38,56,.08);max-width:520px}
+/* severity band replaces the thin flag edge */
+.cband{padding:12px 22px;display:flex;align-items:center;gap:10px;color:#fff;
+  font-size:12.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+.cband.red{background:var(--red)} .cband.amber{background:var(--amber)}
+.cband.ok{background:var(--blue)} .cband.jade{background:var(--jade)}
+.cband .bR{margin-left:auto;letter-spacing:.07em;opacity:.92}
+.chead{padding:22px 22px 4px}
+.ckick{font-size:12.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
+.cnm{font-size:29px;line-height:1.08;font-weight:700;letter-spacing:-.032em;margin-top:9px}
+.csub{font-size:16px;font-weight:500;color:var(--mut);margin-top:11px;line-height:1.45}
+.csub .hot{font-weight:700}
+.chero{display:flex;align-items:flex-end;gap:13px;margin-top:18px;padding-bottom:18px}
+.chero .hv{font-size:42px;font-weight:700;letter-spacing:-.042em;line-height:.94;font-variant-numeric:tabular-nums}
+.chero .hl{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);padding-bottom:7px}
+/* oversized rate transition (offer card) */
+.crate{display:flex;align-items:flex-end;gap:15px;margin-top:18px;padding-bottom:18px;flex-wrap:wrap}
+.crate .rfrom{font-size:30px;font-weight:700;letter-spacing:-.03em;color:var(--red);text-decoration:line-through;text-decoration-thickness:2px;line-height:1}
+.crate .rar{font-size:25px;color:var(--faint);font-weight:700;line-height:1.1}
+.crate .rto{font-size:50px;font-weight:700;letter-spacing:-.045em;color:var(--jade);line-height:.9;font-variant-numeric:tabular-nums}
+.crate .rlab{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);padding-bottom:6px}
+/* field list — one labeled line per spec field, large values */
+.cfields{border-top:1px solid #eaf0f6;padding:4px 22px 16px}
+.cfl{display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid #f1f5f9}
+.cfl:last-child{border-bottom:0}
+.cfl .fk{font-size:15px;font-weight:500;color:var(--mut)}
+.cfl .fv{margin-left:auto;font-size:21px;font-weight:700;letter-spacing:-.022em;text-align:right;font-variant-numeric:tabular-nums}
+.cfl .fv .was{display:block;font-size:13.5px;font-weight:500;color:var(--faint);text-decoration:line-through;letter-spacing:0}
+.cnote{margin:0 22px 20px;background:#f4f8fb;border-radius:15px;padding:16px 18px;
+  font-size:16px;line-height:1.52;font-weight:500;color:var(--mut)}
+.cnote b{color:var(--ink);font-weight:700}
+.cnote .warn{color:var(--red);font-weight:700}
+.cnote .good{color:var(--jade);font-weight:700}
+.cnote.tintr{background:var(--red-t)} .cnote.tinta{background:var(--amber-t)}
+.cnote.tintb{background:var(--blue-t)} .cnote.tintj{background:var(--jade-t)}
+/* SmartFit block */
+.cfit{display:flex;align-items:center;gap:16px;margin:0 22px 20px;border:2px solid var(--blue-t2);
+  border-radius:16px;padding:15px 18px;background:#fbfdff}
+.cfit .fnum{font-size:38px;font-weight:700;color:var(--blue);letter-spacing:-.035em;line-height:.9;font-variant-numeric:tabular-nums}
+.cfit .ftx{font-size:14px;font-weight:500;color:var(--mut);line-height:1.42}
+.cfit .ftx b{display:block;font-size:16px;color:var(--ink);font-weight:700;letter-spacing:-.01em}
+/* debt mapping */
+.cmaplab{font-size:12.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--mut);
+  padding:0 22px;margin:2px 0 2px}
+.cmap{display:flex;align-items:flex-start;gap:12px;margin:0 22px 18px;padding:14px 0 0;border-top:1px solid #eaf0f6}
+.cmap .cdot{width:11px;height:11px;border-radius:99px;flex:none;margin-top:7px}
+.cmap .cdot.amber{background:var(--amber)}
+.cmap .mtx{font-size:17px;font-weight:700;letter-spacing:-.015em}
+.cmap .mtx span{display:block;font-size:14px;font-weight:500;color:var(--faint);margin-top:3px;letter-spacing:0}
+.cmap .mtx span .hot{color:var(--red);font-weight:700}
+.cmap .mafter{margin-left:auto;text-align:right;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.cmap .mafter s{display:block;font-size:14px;color:var(--faint);font-weight:500;letter-spacing:0}
+.cmap .mafter .nw{color:var(--jade)}
+/* ruled-out routes */
+.cruled{margin:0 22px 20px;border:2px dashed var(--blue-t2);border-radius:15px;padding:14px 16px}
+.cruled .rh{font-size:16px;font-weight:700;letter-spacing:-.015em}
+.cruled .rs{font-size:13.5px;font-weight:500;color:var(--mut);margin-top:3px}
+.cruled .ri{display:flex;gap:11px;padding:12px 0 0;margin-top:11px;border-top:1px solid #eaf0f6}
+.cruled .rx{width:22px;height:22px;border-radius:99px;background:var(--red-t);color:var(--red);
+  display:grid;place-items:center;flex:none;margin-top:2px}
+.cruled .rx svg{width:12px;height:12px}
+.cruled .rn{font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.cruled .rw{font-size:14px;font-weight:500;color:var(--mut);line-height:1.45;margin-top:3px}
+/* actions + quiet CTA, scaled up */
+.cact{padding:0 22px 22px;display:flex;gap:12px}
+.cbtn{flex:1;font-family:inherit;border:2px solid #dfe7f0;background:#fff;border-radius:14px;padding:15px 12px;
+  font-size:15.5px;font-weight:700;color:var(--mut);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.cbtn.solid{flex:1.7}
+.cghost .cbtn{flex:1.15}
+.cbtn svg{flex:none}
+.cbtn svg{width:18px;height:18px;stroke:currentColor}
+.cbtn.solid{color:#fff;border-color:transparent}
+.cbtn.solid.red{background:var(--red);box-shadow:0 6px 16px rgba(214,69,69,.28)}
+.cbtn.solid.amber{background:var(--amber);box-shadow:0 6px 16px rgba(221,143,16,.28)}
+.cbtn.rest{cursor:default;color:var(--faint);justify-content:flex-start}
+.ccta{padding:0 22px 22px}
+.clink{display:inline-flex;align-items:center;gap:9px;font-size:19px;font-weight:700;letter-spacing:-.015em;
+  color:var(--blue);text-decoration:none;cursor:pointer}
+.clink:hover{color:var(--blue-d);text-decoration:underline}
+.clink svg{width:20px;height:20px;stroke:currentColor}
+.cctasub{font-size:14px;color:var(--faint);font-weight:500;margin-top:10px;line-height:1.5}
+.cctasub b{color:var(--mut)}
+.cghost{display:flex;gap:12px;margin-top:14px}
+
+/* ---- selection chrome (debt cards) ---- */
+.selrow{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:2px 2px}
+.selrow .sl{font-size:11.5px;font-weight:800;color:var(--ink)}
+.selrow .selcount{font-size:10.5px;color:var(--faint);font-weight:600;margin-left:auto}
+.cbx{width:18px;height:18px;border-radius:5px;border:2px solid #b0bfd0;background:#fff;display:grid;place-items:center;cursor:pointer;flex:none;transition:.15s}
+.cbx svg{width:11px;height:11px;stroke:#fff;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:none}
+.cbx.on,.cbx.some{background:var(--blue);border-color:var(--blue)}
+.cbx.on .ck{display:block}
+.cbx.some .dd{display:block}
+.sw{width:34px;height:20px;border-radius:999px;background:#c3cfdd;position:relative;cursor:pointer;transition:background .2s;flex:none;display:inline-block}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:99px;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(21,38,56,.25)}
+.sw.on{background:var(--blue)}
+.sw.on::after{transform:translateX(14px)}
+.tl .cbx,.tlx .toprow .cbx{margin-left:2px}
+.tl.picked,.tlx.picked{box-shadow:0 0 0 2px var(--blue-t2),var(--shadow)}
+</style>
+</head>
+<body>
+
+<div class="pagehead">
+  <div class="kick">Debt Navigator · UserTesting stimulus</div>
+  <h1>Debt card &amp; offer card — six variations, minimal → maximal</h1>
+  <p>Same design system and canonical data as the North Star prototype (Jordan R.). Only <b>information density</b> changes between steps. Severity uses the prototype's triage palette throughout — <span style="color:var(--red);font-weight:800">red = costing you</span>, <span style="color:var(--amber);font-weight:800">amber = could improve</span>, <span style="color:var(--blue-d);font-weight:800">blue = already fine</span> — and the color encoding deepens as the cards get denser.</p>
+</div>
+
+<!-- ================================================================ DEBT CARD -->
+<div class="sect" id="debtsect">
+  <div class="sh"><h2>Debt card — selectable</h2><span class="src">three canonical accounts, one per severity: Visa card (red) · Auto loan (amber) · Student loan (blue)</span></div>
+  <div class="note">Every step shows all three severities so the color system reads at a glance. V1 is the colorless control; color enters at V2 and does more work at each step. Each card carries an <b>include checkbox (unchecked by default)</b>, with a <b>Select all checkbox</b> per variation (dash = partial selection) — checked accounts get a subtle ring.</div>
+  <div class="legend">
+    <span><i style="background:var(--red)"></i>costing you</span>
+    <span><i style="background:var(--amber)"></i>could improve</span>
+    <span><i style="background:var(--blue)"></i>already fine</span>
+  </div>
+  <div class="rail">
+
+    <!-- D1 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V1</span><span class="vname">Bare ledger</span></div>
+      <div class="adds">Name + balance only, no severity. The colorless control — every account looks equally urgent.</div>
+      <div class="stagebox">
+        <div class="tl"><div class="mid"><div class="nm">Visa card</div></div><div class="rt"><div class="bal">$9,400</div></div></div>
+        <div class="tl"><div class="mid"><div class="nm">Auto loan</div></div><div class="rt"><div class="bal">$14,800</div></div></div>
+        <div class="tl"><div class="mid"><div class="nm">Student loan</div></div><div class="rt"><div class="bal">$8,200</div></div></div>
+      </div>
+    </div>
+
+    <!-- D2 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V2</span><span class="vname">+ Severity color</span></div>
+      <div class="adds">Adds <b>color alone</b> — the flagged edge does the triage with zero extra words: <span class="rr">red</span> / <span class="aa">amber</span> / <span class="bb">blue</span>.</div>
+      <div class="stagebox">
+        <div class="tl f-red"><div class="mid"><div class="nm">Visa card</div></div><div class="rt"><div class="bal">$9,400</div></div></div>
+        <div class="tl f-amber"><div class="mid"><div class="nm">Auto loan</div></div><div class="rt"><div class="bal">$14,800</div></div></div>
+        <div class="tl f-ok"><div class="mid"><div class="nm">Student loan</div></div><div class="rt"><div class="bal">$8,200</div></div></div>
+      </div>
+    </div>
+
+    <!-- D3 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V3</span><span class="vname">+ Terms</span></div>
+      <div class="adds">Adds <b>APR and payment</b> — with the APR inked in its severity color, so the worst number is the loudest.</div>
+      <div class="stagebox">
+        <div class="tl f-red">
+          <div class="mid"><div class="nm">Visa card</div><div class="dt"><b class="sev-red">24.9% APR</b> · $280/mo</div></div>
+          <div class="rt"><div class="bal">$9,400</div></div>
+        </div>
+        <div class="tl f-amber">
+          <div class="mid"><div class="nm">Auto loan</div><div class="dt"><b class="sev-amber">14.0% APR</b> · $360/mo</div></div>
+          <div class="rt"><div class="bal">$14,800</div></div>
+        </div>
+        <div class="tl f-ok">
+          <div class="mid"><div class="nm">Student loan</div><div class="dt"><b class="sev-ok">5.8% APR</b> · $95/mo</div></div>
+          <div class="rt"><div class="bal">$8,200</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D4 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V4</span><span class="vname">+ Tag &amp; diagnosis</span></div>
+      <div class="adds">Adds <b>severity-tinted icon, group, verdict tag, and the plain-language note</b>. Color + words now agree.</div>
+      <div class="stagebox">
+        <div class="tl f-red">
+          <div class="ic red"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6.5" width="17" height="12" rx="2.5"/><path d="M3.5 10.5h17"/></svg></div>
+          <div class="mid"><div class="grpk">Credit cards</div><div class="nm">Visa card</div><div class="dt"><b class="sev-red">24.9% APR</b> · $280/mo · min-payment trap</div></div>
+          <div class="rt"><div class="bal">$9,400</div><span class="tag red">costing you</span></div>
+        </div>
+        <div class="tl f-amber">
+          <div class="ic amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V11l2-4.5h10L19 11v5.5"/><path d="M3.5 16.5h17"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="16.5" cy="16.5" r="1.6"/></svg></div>
+          <div class="mid"><div class="grpk">Auto</div><div class="nm">Auto loan</div><div class="dt"><b class="sev-amber">14.0% APR</b> · $360/mo · refi likely beats this</div></div>
+          <div class="rt"><div class="bal">$14,800</div><span class="tag amber">could improve</span></div>
+        </div>
+        <div class="tl f-ok">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L3 8.5 12 13l9-4.5z"/><path d="M6.5 10.5V15c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3v-4.5"/></svg></div>
+          <div class="mid"><div class="grpk">Loans</div><div class="nm">Student loan</div><div class="dt"><b class="sev-ok">5.8% APR</b> · $95/mo · already a good rate</div></div>
+          <div class="rt"><div class="bal">$8,200</div><span class="tag ok">already fine</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D5 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V5</span><span class="vname">+ Cost mechanics</span></div>
+      <div class="adds">Adds the <b>stat row</b> — the numbers that justify the flag, each inked in the account's severity color.</div>
+      <div class="stagebox">
+        <div class="tlx f-red">
+          <div class="toprow">
+            <div class="ic red"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6.5" width="17" height="12" rx="2.5"/><path d="M3.5 10.5h17"/></svg></div>
+            <div class="mid"><div class="grpk">Credit cards</div><div class="nm">Visa card</div><div class="dt"><b class="sev-red">24.9% APR</b> · $280/mo · min-payment trap</div></div>
+            <div class="rt"><div class="bal">$9,400</div><span class="tag red">costing you</span></div>
+          </div>
+          <div class="teas">
+            <div class="t"><div class="tv sev-red">$195</div><div class="tl2">Interest / mo</div></div>
+            <div class="t"><div class="tv sev-red">70%</div><div class="tl2">Of payment</div></div>
+            <div class="t"><div class="tv sev-red">2033</div><div class="tl2">At minimums</div></div>
+          </div>
+        </div>
+        <div class="tlx f-amber">
+          <div class="toprow">
+            <div class="ic amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V11l2-4.5h10L19 11v5.5"/><path d="M3.5 16.5h17"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="16.5" cy="16.5" r="1.6"/></svg></div>
+            <div class="mid"><div class="grpk">Auto</div><div class="nm">Auto loan</div><div class="dt"><b class="sev-amber">14.0% APR</b> · $360/mo · refi likely beats this</div></div>
+            <div class="rt"><div class="bal">$14,800</div><span class="tag amber">could improve</span></div>
+          </div>
+          <div class="teas">
+            <div class="t"><div class="tv sev-amber">$172</div><div class="tl2">Interest / mo</div></div>
+            <div class="t"><div class="tv sev-amber">48%</div><div class="tl2">Of payment</div></div>
+            <div class="t"><div class="tv sev-jade">$1,100</div><div class="tl2">Refi could save</div></div>
+          </div>
+        </div>
+        <div class="tlx f-ok">
+          <div class="toprow">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L3 8.5 12 13l9-4.5z"/><path d="M6.5 10.5V15c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3v-4.5"/></svg></div>
+            <div class="mid"><div class="grpk">Loans</div><div class="nm">Student loan</div><div class="dt"><b class="sev-ok">5.8% APR</b> · $95/mo · already a good rate</div></div>
+            <div class="rt"><div class="bal">$8,200</div><span class="tag ok">already fine</span></div>
+          </div>
+          <div class="teas">
+            <div class="t"><div class="tv sev-ok">$40</div><div class="tl2">Interest / mo</div></div>
+            <div class="t"><div class="tv sev-ok">5.8%</div><div class="tl2">Beats refi rates</div></div>
+            <div class="t"><div class="tv sev-ok">2031</div><div class="tl2">On track</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D6 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V6</span><span class="vname">Full dossier</span></div>
+      <div class="adds">Adds <b>trajectory sentence, severity-tinted card wash, and severity-matched actions</b> — red urges, amber suggests, blue rests.</div>
+      <div class="stagebox">
+        <div class="tlx wash f-red">
+          <div class="toprow">
+            <div class="ic red"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6.5" width="17" height="12" rx="2.5"/><path d="M3.5 10.5h17"/></svg></div>
+            <div class="mid"><div class="grpk">Credit cards</div><div class="nm">Visa card</div><div class="dt"><b class="sev-red">24.9% APR</b> · $280/mo · min-payment trap</div></div>
+            <div class="rt"><div class="bal">$9,400</div><span class="tag red">costing you</span></div>
+          </div>
+          <div class="teas">
+            <div class="t"><div class="tv sev-red">$195</div><div class="tl2">Interest / mo</div></div>
+            <div class="t"><div class="tv sev-red">70%</div><div class="tl2">Of payment</div></div>
+            <div class="t"><div class="tv sev-red">2033</div><div class="tl2">At minimums</div></div>
+          </div>
+          <div class="proj">On minimums this balance costs <b>~$8,900 in interest</b> before it clears. <span class="warn">$195 of every $280 payment is interest, not progress.</span></div>
+          <div class="actrow">
+            <button class="abtn warn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/></svg>Fix this first</button>
+            <button class="abtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-.9 3.4A8 8 0 0 1 21 12z"/><path d="M9 11h.01M12.5 11h.01M16 11h.01"/></svg>Ask a question</button>
+          </div>
+        </div>
+        <div class="tlx wash f-amber">
+          <div class="toprow">
+            <div class="ic amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V11l2-4.5h10L19 11v5.5"/><path d="M3.5 16.5h17"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="16.5" cy="16.5" r="1.6"/></svg></div>
+            <div class="mid"><div class="grpk">Auto</div><div class="nm">Auto loan</div><div class="dt"><b class="sev-amber">14.0% APR</b> · $360/mo · refi likely beats this</div></div>
+            <div class="rt"><div class="bal">$14,800</div><span class="tag amber">could improve</span></div>
+          </div>
+          <div class="teas">
+            <div class="t"><div class="tv sev-amber">$172</div><div class="tl2">Interest / mo</div></div>
+            <div class="t"><div class="tv sev-amber">48%</div><div class="tl2">Of payment</div></div>
+            <div class="t"><div class="tv sev-jade">$1,100</div><div class="tl2">Refi could save</div></div>
+          </div>
+          <div class="proj">Not an emergency — but a refi at <b>6.4%</b> keeps the same car and saves <span class="good">about $1,100 in interest</span> over the term.</div>
+          <div class="actrow">
+            <button class="abtn amb"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5L5 19"/><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="16.5" cy="16.5" r="2.6"/></svg>See refi options</button>
+            <button class="abtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-.9 3.4A8 8 0 0 1 21 12z"/><path d="M9 11h.01M12.5 11h.01M16 11h.01"/></svg>Ask a question</button>
+          </div>
+        </div>
+        <div class="tlx wash f-ok">
+          <div class="toprow">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L3 8.5 12 13l9-4.5z"/><path d="M6.5 10.5V15c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3v-4.5"/></svg></div>
+            <div class="mid"><div class="grpk">Loans</div><div class="nm">Student loan</div><div class="dt"><b class="sev-ok">5.8% APR</b> · $95/mo · already a good rate</div></div>
+            <div class="rt"><div class="bal">$8,200</div><span class="tag ok">already fine</span></div>
+          </div>
+          <div class="teas">
+            <div class="t"><div class="tv sev-ok">$40</div><div class="tl2">Interest / mo</div></div>
+            <div class="t"><div class="tv sev-ok">5.8%</div><div class="tl2">Beats refi rates</div></div>
+            <div class="t"><div class="tv sev-ok">2031</div><div class="tl2">On track</div></div>
+          </div>
+          <div class="proj"><b>5.8% already beats</b> anything a refi would price for you. Keep it, keep paying — nothing to fix here.</div>
+          <div class="actrow">
+            <button class="abtn quiet"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M5 12l4 4L19 6"/></svg>Already fine — no action needed</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================ OFFER CARD -->
+<div class="sect">
+  <div class="sh"><h2>Offer card (SmartMove)</h2><span class="src">canonical offer: SmartMove 1 · Auto refinance · 14.0% → 6.4% · $350/mo · $1,100 saved · 48 mo</span></div>
+  <div class="note">The CTA is a quiet link (not a button) and the SmartFit Score is on every variation — both are part of the offer's identity, not the density ladder. Color tells the fix story: the <span style="color:var(--red);font-weight:800">red problem rate</span> becomes a <span style="color:var(--jade);font-weight:800">jade outcome</span>; severity dots tie mapped debts back to the debt list.</div>
+  <div class="rail">
+
+    <!-- O1 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V1</span><span class="vname">Headline + ask</span></div>
+      <div class="adds">Name, one hero number, CTA. Nothing else.</div>
+      <div class="stagebox">
+        <div class="mcard">
+          <div class="mtop">
+            <div class="namerow"><div class="mname">Refinance the auto loan at 6.4%</div><span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span></div>
+            <div class="mcta">
+              <a class="ctalink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O2 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V2</span><span class="vname">+ Teaser stats</span></div>
+      <div class="adds">Adds the <b>3-stat row</b> — the win is already <span style="color:var(--jade);font-weight:800">jade</span>.</div>
+      <div class="stagebox">
+        <div class="mcard">
+          <div class="mtop">
+            <div class="namerow"><div class="mname">Refinance the auto loan</div><span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span></div>
+            <div class="mteas">
+              <div class="t"><div class="tv">6.4%</div><div class="tl2">New rate</div></div>
+              <div class="t"><div class="tv">$350/mo</div><div class="tl2">New payment</div></div>
+              <div class="t"><div class="tv jade">$1,100 saved</div><div class="tl2">Vs. today</div></div>
+            </div>
+            <div class="mcta">
+              <a class="ctalink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O3 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V3</span><span class="vname">+ Sequence &amp; why</span></div>
+      <div class="adds">Adds <b>kick line, Ready status, and why-copy</b> — the rate move rendered <span class="rr">red</span> → <span style="color:var(--jade);font-weight:800">jade</span>.</div>
+      <div class="stagebox">
+        <div class="mcard">
+          <div class="mtop">
+            <div class="mkick"><span class="k">SmartMove 1 · Available now</span><span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span><span class="st">Ready</span></div>
+            <div class="mname">Refinance the auto loan</div>
+            <div class="mwhy">Your cleanest win. <span class="from">14.0%</span> → <span class="to">6.4%</span> with no credit-score prerequisite — and the payment history feeds ScoreCast for Move 3.</div>
+            <div class="mteas">
+              <div class="t"><div class="tv">6.4%</div><div class="tl2">New rate</div></div>
+              <div class="t"><div class="tv">$350/mo</div><div class="tl2">New payment</div></div>
+              <div class="t"><div class="tv jade">$1,100 saved</div><div class="tl2">Vs. today</div></div>
+            </div>
+            <div class="mcta">
+              <a class="ctalink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O4 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V4</span><span class="vname">+ Debt mapping</span></div>
+      <div class="adds">Adds <b>"which of your debts this touches"</b> — the mapped debt carries its <span class="aa">severity dot</span> from the debt list; the after-state lands jade.</div>
+      <div class="stagebox">
+        <div class="mcard">
+          <div class="mtop">
+            <div class="mkick"><span class="k">SmartMove 1 · Available now</span><span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span><span class="st">Ready</span></div>
+            <div class="mname">Refinance the auto loan</div>
+            <div class="mwhy">Your cleanest win. <span class="from">14.0%</span> → <span class="to">6.4%</span> with no credit-score prerequisite — and the payment history feeds ScoreCast for Move 3.</div>
+            <div class="mteas">
+              <div class="t"><div class="tv">6.4%</div><div class="tl2">New rate</div></div>
+              <div class="t"><div class="tv">$350/mo</div><div class="tl2">New payment</div></div>
+              <div class="t"><div class="tv jade">$1,100 saved</div><div class="tl2">Vs. today</div></div>
+            </div>
+          </div>
+          <div class="inner rule">
+            <div class="maplab">Which of your debts this touches</div>
+            <div class="mapln">
+              <span class="fdot amber"></span>
+              <div class="mn2">Auto loan<span>$14,800 · <span class="hot">14.0% APR</span></span></div>
+              <div class="arrow">→</div>
+              <div class="after"><s>$360/mo</s><span class="nw">$350/mo</span></div>
+            </div>
+            <div class="mcta">
+              <a class="ctalink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O5 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V5</span><span class="vname">+ Proof &amp; reassurance</span></div>
+      <div class="adds">Adds the <b>arithmetic proof block</b> (cost in red, save in jade) and the <b>no-credit-impact subline</b>.</div>
+      <div class="stagebox">
+        <div class="mcard">
+          <div class="mtop">
+            <div class="mkick"><span class="k">SmartMove 1 · Available now</span><span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span><span class="st">Ready</span></div>
+            <div class="mname">Refinance the auto loan</div>
+            <div class="mwhy">Your cleanest win. <span class="from">14.0%</span> → <span class="to">6.4%</span> with no credit-score prerequisite — and the payment history feeds ScoreCast for Move 3.</div>
+            <div class="mteas">
+              <div class="t"><div class="tv">6.4%</div><div class="tl2">New rate</div></div>
+              <div class="t"><div class="tv">$350/mo</div><div class="tl2">New payment</div></div>
+              <div class="t"><div class="tv jade">$1,100 saved</div><div class="tl2">Vs. today</div></div>
+            </div>
+          </div>
+          <div class="inner rule">
+            <div class="maplab">Which of your debts this touches</div>
+            <div class="mapln">
+              <span class="fdot amber"></span>
+              <div class="mn2">Auto loan<span>$14,800 · <span class="hot">14.0% APR</span></span></div>
+              <div class="arrow">→</div>
+              <div class="after"><s>$360/mo</s><span class="nw">$350/mo</span></div>
+            </div>
+            <div class="proof">The arithmetic: <b>$14,800 at <span class="from">14.0%</span> over 48 mo</b> costs about <b><span class="from">$1,100 more in interest</span></b> than the same balance at <b><span class="to">6.4%</span></b>. Same car, same debt — cheaper money.</div>
+            <div class="mcta">
+              <a class="ctalink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <div class="ctasub"><b>No credit impact.</b> Takes about 60 seconds. You see the rate before deciding anything.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O6 -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">V6</span><span class="vname">Full diligence</span></div>
+      <div class="adds">Adds <b>"routes we ruled out"</b> (red ✕ marks) and <b>secondary actions</b> — Hold this offer / Ask a question.</div>
+      <div class="stagebox">
+        <div class="mcard">
+          <div class="mtop">
+            <div class="mkick"><span class="k">SmartMove 1 · Available now</span><span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span><span class="st">Ready</span></div>
+            <div class="mname">Refinance the auto loan</div>
+            <div class="mwhy">Your cleanest win. <span class="from">14.0%</span> → <span class="to">6.4%</span> with no credit-score prerequisite — and the payment history feeds ScoreCast for Move 3.</div>
+            <div class="mteas">
+              <div class="t"><div class="tv">6.4%</div><div class="tl2">New rate</div></div>
+              <div class="t"><div class="tv">$350/mo</div><div class="tl2">New payment</div></div>
+              <div class="t"><div class="tv jade">$1,100 saved</div><div class="tl2">Vs. today</div></div>
+            </div>
+          </div>
+          <div class="inner rule">
+            <div class="maplab">Which of your debts this touches</div>
+            <div class="mapln">
+              <span class="fdot amber"></span>
+              <div class="mn2">Auto loan<span>$14,800 · <span class="hot">14.0% APR</span></span></div>
+              <div class="arrow">→</div>
+              <div class="after"><s>$360/mo</s><span class="nw">$350/mo</span></div>
+            </div>
+            <div class="proof">The arithmetic: <b>$14,800 at <span class="from">14.0%</span> over 48 mo</b> costs about <b><span class="from">$1,100 more in interest</span></b> than the same balance at <b><span class="to">6.4%</span></b>. Same car, same debt — cheaper money.</div>
+            <div class="dili open" id="dili">
+              <button onclick="document.getElementById('dili').classList.toggle('open')">
+                <div class="dt2"><div class="dh">We compared 3 routes for this debt</div><div class="ds">Why refinance won — and what we ruled out</div></div>
+                <span class="chev"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+              </button>
+              <div class="dbody"><div class="dinner">
+                <div class="ruled">
+                  <span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+                  <div><div class="rn">Wait for rates to drop</div><div class="rw">Every month at 14.0% costs ~$92 in avoidable interest. Waiting has a price tag.</div></div>
+                </div>
+                <div class="ruled">
+                  <span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+                  <div><div class="rn">Pay it down aggressively first</div><div class="rw">That cash earns more killing your 27.4% store card. Wrong target.</div></div>
+                </div>
+              </div></div>
+            </div>
+            <div class="mcta">
+              <a class="ctalink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <div class="ctasub"><b>No credit impact.</b> Takes about 60 seconds. You see the rate before deciding anything.</div>
+              <div class="ghostrow">
+                <button class="gbtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v17l-6-4.5-6 4.5z"/></svg>
+                  Hold this offer
+                </button>
+                <button class="gbtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-.9 3.4A8 8 0 0 1 21 12z"/><path d="M9 11h.01M12.5 11h.01M16 11h.01"/></svg>
+                  Ask a question
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================ FULL SPEC · DESIGN A -->
+<div class="sect">
+  <div class="sh"><h2>Full-spec set — Design A · dashboard tiles</h2><span class="src">every standardized field, account + portfolio, current + optimized</span></div>
+  <div class="note">Account fields: <b>Type · Name · Amount · Rate · Interest · Payment · Cost · Time to pay off</b> (+ <b>Fit Score</b>, future only). Portfolio fields: <b>Total debt · Total accounts · Total amount · Blended rate · Total interest · Payment · Total cost · Est. time to debt free · Liability drag</b>.</div>
+  <div class="rail">
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">A1</span><span class="vname">Current account card</span></div>
+      <div class="adds">Single account, today. Type in the kick; Amount in the header; the other six fields as tiles.</div>
+      <div class="stagebox">
+        <div class="tlx f-amber">
+          <div class="toprow">
+            <div class="ic amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V11l2-4.5h10L19 11v5.5"/><path d="M3.5 16.5h17"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="16.5" cy="16.5" r="1.6"/></svg></div>
+            <div class="mid"><div class="grpk">Car loan · current</div><div class="nm">Auto loan</div><div class="dt"><b class="sev-amber">14.0% APR</b> · $360/mo</div></div>
+            <div class="rt"><div class="bal">$14,800</div><span class="tag amber">could improve</span></div>
+          </div>
+          <div class="tiles">
+            <div class="tile"><div class="v">$14,800</div><div class="l">Amount</div></div>
+            <div class="tile"><div class="v sev-amber">14.0%</div><div class="l">Rate</div></div>
+            <div class="tile"><div class="v">$360/mo</div><div class="l">Payment</div></div>
+            <div class="tile"><div class="v sev-amber">$172/mo</div><div class="l">Interest</div></div>
+            <div class="tile"><div class="v sev-red">$3,700</div><div class="l">Cost to pay off</div></div>
+            <div class="tile"><div class="v">Oct 2030</div><div class="l">Time to pay off</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">A2</span><span class="vname">Optimized account card</span></div>
+      <div class="adds">Same account after the refi — improved fields show the old value struck through; <b>Fit Score</b> joins the grid (future only).</div>
+      <div class="stagebox">
+        <div class="tlx f-jade">
+          <div class="toprow">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5V11l2-4.5h10L19 11v5.5"/><path d="M3.5 16.5h17"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="16.5" cy="16.5" r="1.6"/></svg></div>
+            <div class="mid"><div class="grpk">Car loan · optimized</div><div class="nm">Auto loan — refinanced</div><div class="dt"><b class="sev-jade">6.4% APR</b> · $350/mo</div></div>
+            <div class="rt"><div class="bal">$14,800</div><span class="tag jade">optimized</span></div>
+          </div>
+          <div class="tiles">
+            <div class="tile"><div class="v">$14,800</div><div class="l">Amount</div></div>
+            <div class="tile"><span class="was">14.0%</span><div class="v sev-jade">6.4%</div><div class="l">Rate</div></div>
+            <div class="tile"><span class="was">$360/mo</span><div class="v sev-jade">$350/mo</div><div class="l">Payment</div></div>
+            <div class="tile"><span class="was">$172/mo</span><div class="v sev-jade">$79/mo</div><div class="l">Interest</div></div>
+            <div class="tile"><span class="was">$3,700</span><div class="v sev-jade">$2,600</div><div class="l">Cost to pay off</div></div>
+            <div class="tile"><span class="was">Oct 2030</span><div class="v sev-jade">Jun 2030</div><div class="l">Time to pay off</div></div>
+          </div>
+          <div class="tiles" style="border-top-style:dashed">
+            <div class="tile" style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:10px;text-align:left">
+              <span class="fitchip"><span class="fn">92</span><span class="fl">SmartFit<br>Score</span></span>
+              <span style="font-size:10px;color:var(--mut);font-weight:600;max-width:220px">How well this future account fits your profile, budget, and payoff goal.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">A3</span><span class="vname">Current summary</span></div>
+      <div class="adds">Whole portfolio, today — all nine standardized portfolio fields as a 3×3 grid.</div>
+      <div class="stagebox">
+        <div class="tlx f-red">
+          <div class="sumhead"><div class="k2">Your position today</div><div class="h2x">Current portfolio</div><div class="s2">7 accounts · snapshot Aug 2026</div></div>
+          <div class="tiles">
+            <div class="tile"><div class="v">$38,400</div><div class="l">Total debt</div></div>
+            <div class="tile"><div class="v">7</div><div class="l">Total accounts</div></div>
+            <div class="tile"><div class="v">$47,200</div><div class="l">Total amount (w/ interest)</div></div>
+            <div class="tile"><div class="v sev-red">18.2%</div><div class="l">Blended rate</div></div>
+            <div class="tile"><div class="v sev-red">$580/mo</div><div class="l">Total interest</div></div>
+            <div class="tile"><div class="v">$1,240/mo</div><div class="l">Payment</div></div>
+            <div class="tile"><div class="v sev-red">$8,800</div><div class="l">Total cost</div></div>
+            <div class="tile"><div class="v">Mar 2033</div><div class="l">Est. debt free</div></div>
+            <div class="tile"><div class="v sev-red">47%</div><div class="l">Liability drag</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">A4</span><span class="vname">Optimized summary</span></div>
+      <div class="adds">Portfolio after the full SmartMove sequence — improved fields struck-and-replaced in jade.</div>
+      <div class="stagebox">
+        <div class="tlx f-jade">
+          <div class="sumhead"><div class="k2 jd">After your SmartMoves</div><div class="h2x">Optimized portfolio</div><div class="s2">5 accounts · projected from your plan</div></div>
+          <div class="tiles">
+            <div class="tile"><div class="v">$38,400</div><div class="l">Total debt</div></div>
+            <div class="tile"><span class="was">7</span><div class="v sev-jade">5</div><div class="l">Total accounts</div></div>
+            <div class="tile"><span class="was">$47,200</span><div class="v sev-jade">$43,600</div><div class="l">Total amount (w/ interest)</div></div>
+            <div class="tile"><span class="was">18.2%</span><div class="v sev-jade">11.6%</div><div class="l">Blended rate</div></div>
+            <div class="tile"><span class="was">$580/mo</span><div class="v sev-jade">$370/mo</div><div class="l">Total interest</div></div>
+            <div class="tile"><span class="was">$1,240/mo</span><div class="v sev-jade">$1,205/mo</div><div class="l">Payment</div></div>
+            <div class="tile"><span class="was">$8,800</span><div class="v sev-jade">$5,200</div><div class="l">Total cost</div></div>
+            <div class="tile"><span class="was">Mar 2033</span><div class="v sev-jade">Nov 2030</div><div class="l">Est. debt free</div></div>
+            <div class="tile"><span class="was">47%</span><div class="v sev-jade">31%</div><div class="l">Liability drag</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================ FULL SPEC · DESIGN B -->
+<div class="sect">
+  <div class="sh"><h2>Full-spec set — Design B · statement ledger</h2><span class="src">same fields, same data — dark statement treatment with line-item rows</span></div>
+  <div class="note">Every field is a labeled ledger line, so nothing hides in a layout — good for testing comprehension of the raw field list against Design A's scannable tiles.</div>
+  <div class="rail">
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">B1</span><span class="vname">Current account card</span></div>
+      <div class="adds">One line per spec field, dotted leaders, statement styling.</div>
+      <div class="stagebox">
+        <div class="stmt">
+          <div class="sk">Single account <span class="pill">Current</span></div>
+          <div class="snm">Auto loan</div>
+          <div class="srow"><span class="lb">Type</span><span class="ld"></span><span class="vl">Car loan</span></div>
+          <div class="srow"><span class="lb">Name</span><span class="ld"></span><span class="vl">Auto loan</span></div>
+          <div class="srow"><span class="lb">Amount</span><span class="ld"></span><span class="vl">$14,800</span></div>
+          <div class="srow"><span class="lb">Rate</span><span class="ld"></span><span class="vl am">14.0% APR</span></div>
+          <div class="srow"><span class="lb">Interest</span><span class="ld"></span><span class="vl am">$172 /mo</span></div>
+          <div class="srow"><span class="lb">Payment</span><span class="ld"></span><span class="vl">$360 /mo</span></div>
+          <div class="srow"><span class="lb">Cost to pay off</span><span class="ld"></span><span class="vl rd">$3,700</span></div>
+          <div class="srow"><span class="lb">Time to pay off</span><span class="ld"></span><span class="vl">Oct 2030</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">B2</span><span class="vname">Optimized account card</span></div>
+      <div class="adds">Same ledger with was→now values and the Fit Score badge (future only).</div>
+      <div class="stagebox">
+        <div class="stmt">
+          <div class="sk">Single account <span class="pill jd">Optimized</span></div>
+          <div class="snm">Auto loan — refinanced</div>
+          <div class="srow"><span class="lb">Type</span><span class="ld"></span><span class="vl">Car loan</span></div>
+          <div class="srow"><span class="lb">Name</span><span class="ld"></span><span class="vl">Auto loan</span></div>
+          <div class="srow"><span class="lb">Amount</span><span class="ld"></span><span class="vl">$14,800</span></div>
+          <div class="srow"><span class="lb">Rate</span><span class="ld"></span><span class="vl jd"><span class="w2">14.0%</span>6.4% APR</span></div>
+          <div class="srow"><span class="lb">Interest</span><span class="ld"></span><span class="vl jd"><span class="w2">$172</span>$79 /mo</span></div>
+          <div class="srow"><span class="lb">Payment</span><span class="ld"></span><span class="vl jd"><span class="w2">$360</span>$350 /mo</span></div>
+          <div class="srow"><span class="lb">Cost to pay off</span><span class="ld"></span><span class="vl jd"><span class="w2">$3,700</span>$2,600</span></div>
+          <div class="srow"><span class="lb">Time to pay off</span><span class="ld"></span><span class="vl jd"><span class="w2">Oct 2030</span>Jun 2030</span></div>
+          <div class="fitbig"><span class="num">92</span><span class="fx"><b>SmartFit Score</b>How well this future account fits your profile, budget, and payoff goal.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">B3</span><span class="vname">Current summary</span></div>
+      <div class="adds">Nine portfolio fields, one per line.</div>
+      <div class="stagebox">
+        <div class="stmt">
+          <div class="sk">Portfolio <span class="pill">Current</span></div>
+          <div class="snm">Your position today</div>
+          <div class="srow"><span class="lb">Total debt</span><span class="ld"></span><span class="vl">$38,400</span></div>
+          <div class="srow"><span class="lb">Total accounts</span><span class="ld"></span><span class="vl">7</span></div>
+          <div class="srow"><span class="lb">Total amount (w/ interest)</span><span class="ld"></span><span class="vl">$47,200</span></div>
+          <div class="srow"><span class="lb">Blended rate</span><span class="ld"></span><span class="vl rd">18.2%</span></div>
+          <div class="srow"><span class="lb">Total interest</span><span class="ld"></span><span class="vl rd">$580 /mo</span></div>
+          <div class="srow"><span class="lb">Payment</span><span class="ld"></span><span class="vl">$1,240 /mo</span></div>
+          <div class="srow"><span class="lb">Total cost</span><span class="ld"></span><span class="vl rd">$8,800</span></div>
+          <div class="srow"><span class="lb">Est. time to debt free</span><span class="ld"></span><span class="vl">Mar 2033</span></div>
+          <div class="srow"><span class="lb">Liability drag</span><span class="ld"></span><span class="vl rd">47%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="vh"><span class="vnum">B4</span><span class="vname">Optimized summary</span></div>
+      <div class="adds">Same nine lines, was→now, everything improved lands in jade.</div>
+      <div class="stagebox">
+        <div class="stmt">
+          <div class="sk">Portfolio <span class="pill jd">Optimized</span></div>
+          <div class="snm">After your SmartMoves</div>
+          <div class="srow"><span class="lb">Total debt</span><span class="ld"></span><span class="vl">$38,400</span></div>
+          <div class="srow"><span class="lb">Total accounts</span><span class="ld"></span><span class="vl jd"><span class="w2">7</span>5</span></div>
+          <div class="srow"><span class="lb">Total amount (w/ interest)</span><span class="ld"></span><span class="vl jd"><span class="w2">$47,200</span>$43,600</span></div>
+          <div class="srow"><span class="lb">Blended rate</span><span class="ld"></span><span class="vl jd"><span class="w2">18.2%</span>11.6%</span></div>
+          <div class="srow"><span class="lb">Total interest</span><span class="ld"></span><span class="vl jd"><span class="w2">$580</span>$370 /mo</span></div>
+          <div class="srow"><span class="lb">Payment</span><span class="ld"></span><span class="vl jd"><span class="w2">$1,240</span>$1,205 /mo</span></div>
+          <div class="srow"><span class="lb">Total cost</span><span class="ld"></span><span class="vl jd"><span class="w2">$8,800</span>$5,200</span></div>
+          <div class="srow"><span class="lb">Est. time to debt free</span><span class="ld"></span><span class="vl jd"><span class="w2">Mar 2033</span>Nov 2030</span></div>
+          <div class="srow"><span class="lb">Liability drag</span><span class="ld"></span><span class="vl jd"><span class="w2">47%</span>31%</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================ DESIGN C · editorial large-type -->
+<div class="sect csect">
+  <div class="sh"><h2>Set C — editorial large-type · debt cards + offer card</h2><span class="src">same canonical data · new visual language · body type up ~40%</span></div>
+  <div class="note">A deliberate break from Sets A and B: severity moves from a thin left edge to a <b>full-width color band</b> with the verdict spelled out, the balance becomes a <b>42px hero number</b>, and every spec field is a large labeled line instead of a tile or a dotted ledger row. Minimum readable size on the card is <b>12.5px</b> (labels) against 8.5–9px in the tile set — built for over-the-shoulder and mobile-in-hand testing. The offer card keeps the <b>quiet-link CTA and SmartFit Score</b>, since those are offer identity rather than density.</div>
+  <div class="legend">
+    <span><i style="background:var(--red)"></i>costing you</span>
+    <span><i style="background:var(--amber)"></i>could improve</span>
+    <span><i style="background:var(--blue)"></i>already fine</span>
+    <span><i style="background:var(--jade)"></i>optimized</span>
+  </div>
+  <div class="crail">
+
+    <!-- C1 · red debt card -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">C1</span><span class="vname">Debt card — costing you</span></div>
+      <div class="adds">Band states the verdict in words; the hero number is the balance; all six account spec fields read as large lines.</div>
+      <div class="ccard">
+        <div class="cband red">Costing you<span class="bR">Fix first</span></div>
+        <div class="chead">
+          <div class="ckick">Credit card · current</div>
+          <div class="cnm">Visa card</div>
+          <div class="csub"><span class="hot sev-red">24.9% APR</span> · $280/mo · min-payment trap</div>
+          <div class="chero"><span class="hv">$9,400</span><span class="hl">Balance</span></div>
+        </div>
+        <div class="cfields">
+          <div class="cfl"><span class="fk">Amount</span><span class="fv">$9,400</span></div>
+          <div class="cfl"><span class="fk">Rate</span><span class="fv sev-red">24.9%</span></div>
+          <div class="cfl"><span class="fk">Interest</span><span class="fv sev-red">$195/mo</span></div>
+          <div class="cfl"><span class="fk">Payment</span><span class="fv">$280/mo</span></div>
+          <div class="cfl"><span class="fk">Cost to pay off</span><span class="fv sev-red">$8,900</span></div>
+          <div class="cfl"><span class="fk">Time to pay off</span><span class="fv">2033</span></div>
+        </div>
+        <div class="cnote tintr">On minimums this balance costs <b>~$8,900 in interest</b> before it clears. <span class="warn">$195 of every $280 payment is interest, not progress.</span></div>
+        <div class="cact">
+          <button class="cbtn solid red"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/></svg>Fix this first</button>
+          <button class="cbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-.9 3.4A8 8 0 0 1 21 12z"/><path d="M9 11h.01M12.5 11h.01M16 11h.01"/></svg>Ask</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C2 · amber debt card -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">C2</span><span class="vname">Debt card — could improve</span></div>
+      <div class="adds">Same anatomy, amber band. The refi upside is inked jade inside the field list so the opportunity reads before the copy.</div>
+      <div class="ccard">
+        <div class="cband amber">Could improve<span class="bR">Refi available</span></div>
+        <div class="chead">
+          <div class="ckick">Car loan · current</div>
+          <div class="cnm">Auto loan</div>
+          <div class="csub"><span class="hot sev-amber">14.0% APR</span> · $360/mo · refi likely beats this</div>
+          <div class="chero"><span class="hv">$14,800</span><span class="hl">Balance</span></div>
+        </div>
+        <div class="cfields">
+          <div class="cfl"><span class="fk">Amount</span><span class="fv">$14,800</span></div>
+          <div class="cfl"><span class="fk">Rate</span><span class="fv sev-amber">14.0%</span></div>
+          <div class="cfl"><span class="fk">Interest</span><span class="fv sev-amber">$172/mo</span></div>
+          <div class="cfl"><span class="fk">Payment</span><span class="fv">$360/mo</span></div>
+          <div class="cfl"><span class="fk">Cost to pay off</span><span class="fv sev-red">$3,700</span></div>
+          <div class="cfl"><span class="fk">Time to pay off</span><span class="fv">Oct 2030</span></div>
+        </div>
+        <div class="cnote tinta">Not an emergency — but a refi at <b>6.4%</b> keeps the same car and saves <span class="good">about $1,100 in interest</span> over the term.</div>
+        <div class="cact">
+          <button class="cbtn solid amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5L5 19"/><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="16.5" cy="16.5" r="2.6"/></svg>See refi options</button>
+          <button class="cbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-.9 3.4A8 8 0 0 1 21 12z"/><path d="M9 11h.01M12.5 11h.01M16 11h.01"/></svg>Ask</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C3 · blue debt card -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">C3</span><span class="vname">Debt card — already fine</span></div>
+      <div class="adds">The resting state still gets the full field list — parity of information, without an action being pushed.</div>
+      <div class="ccard">
+        <div class="cband ok">Already fine<span class="bR">No action</span></div>
+        <div class="chead">
+          <div class="ckick">Student loan · current</div>
+          <div class="cnm">Student loan</div>
+          <div class="csub"><span class="hot sev-ok">5.8% APR</span> · $95/mo · already a good rate</div>
+          <div class="chero"><span class="hv">$8,200</span><span class="hl">Balance</span></div>
+        </div>
+        <div class="cfields">
+          <div class="cfl"><span class="fk">Amount</span><span class="fv">$8,200</span></div>
+          <div class="cfl"><span class="fk">Rate</span><span class="fv sev-ok">5.8%</span></div>
+          <div class="cfl"><span class="fk">Interest</span><span class="fv sev-ok">$40/mo</span></div>
+          <div class="cfl"><span class="fk">Payment</span><span class="fv">$95/mo</span></div>
+          <div class="cfl"><span class="fk">Cost to pay off</span><span class="fv">$1,300</span></div>
+          <div class="cfl"><span class="fk">Time to pay off</span><span class="fv">2031</span></div>
+        </div>
+        <div class="cnote tintb"><b>5.8% already beats</b> anything a refi would price for you. Keep it, keep paying — nothing to fix here.</div>
+        <div class="cact">
+          <button class="cbtn rest"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M5 12l4 4L19 6"/></svg>Already fine — no action needed</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C4 · optimized debt card -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">C4</span><span class="vname">Debt card — optimized</span></div>
+      <div class="adds">The same account after the move: jade band, <b>was-over-now</b> values stacked in the field list, Fit Score attached (future state only).</div>
+      <div class="ccard">
+        <div class="cband jade">Optimized<span class="bR">Projected</span></div>
+        <div class="chead">
+          <div class="ckick">Car loan · optimized</div>
+          <div class="cnm">Auto loan — refinanced</div>
+          <div class="csub"><span class="hot sev-jade">6.4% APR</span> · $350/mo · after SmartMove 1</div>
+          <div class="chero"><span class="hv">$14,800</span><span class="hl">Balance</span></div>
+        </div>
+        <div class="cfields">
+          <div class="cfl"><span class="fk">Amount</span><span class="fv">$14,800</span></div>
+          <div class="cfl"><span class="fk">Rate</span><span class="fv sev-jade"><span class="was">14.0%</span>6.4%</span></div>
+          <div class="cfl"><span class="fk">Interest</span><span class="fv sev-jade"><span class="was">$172/mo</span>$79/mo</span></div>
+          <div class="cfl"><span class="fk">Payment</span><span class="fv sev-jade"><span class="was">$360/mo</span>$350/mo</span></div>
+          <div class="cfl"><span class="fk">Cost to pay off</span><span class="fv sev-jade"><span class="was">$3,700</span>$2,600</span></div>
+          <div class="cfl"><span class="fk">Time to pay off</span><span class="fv sev-jade"><span class="was">Oct 2030</span>Jun 2030</span></div>
+        </div>
+        <div class="cfit"><span class="fnum">92</span><span class="ftx"><b>SmartFit Score</b>How well this future account fits your profile, budget, and payoff goal.</span></div>
+      </div>
+    </div>
+
+    <!-- C5 · offer card -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">C5</span><span class="vname">Offer card — full</span></div>
+      <div class="adds">The rate move becomes the hero: <b>14.0% struck through, 6.4% at 50px</b>. Everything below it — stats, mapping, proof, ruled-out routes — is the same content as O6, just at readable size.</div>
+      <div class="ccard">
+        <div class="cband jade">SmartMove 1<span class="bR">Available now · Ready</span></div>
+        <div class="chead">
+          <div class="ckick">Auto refinance</div>
+          <div class="cnm">Refinance the auto loan</div>
+          <div class="csub">Your cleanest win — no credit-score prerequisite, and the payment history feeds ScoreCast for Move 3.</div>
+          <div class="crate">
+            <span class="rfrom">14.0%</span>
+            <span class="rar">→</span>
+            <span class="rto">6.4%</span>
+            <span class="rlab">New rate</span>
+          </div>
+        </div>
+        <div class="cfields">
+          <div class="cfl"><span class="fk">New payment</span><span class="fv"><span class="was">$360/mo</span>$350/mo</span></div>
+          <div class="cfl"><span class="fk">Interest saved</span><span class="fv sev-jade">$1,100</span></div>
+          <div class="cfl"><span class="fk">Term</span><span class="fv">48 mo</span></div>
+          <div class="cfl"><span class="fk">Credit impact to check</span><span class="fv sev-jade">None</span></div>
+        </div>
+        <div class="cfit"><span class="fnum">92</span><span class="ftx"><b>SmartFit Score</b>How well this offer fits your profile, budget, and payoff goal.</span></div>
+        <div class="cmaplab">Which of your debts this touches</div>
+        <div class="cmap">
+          <span class="cdot amber"></span>
+          <div class="mtx">Auto loan<span>$14,800 · <span class="hot">14.0% APR</span></span></div>
+          <div class="mafter"><s>$360/mo</s><span class="nw">$350/mo</span></div>
+        </div>
+        <div class="cnote tintj">The arithmetic: <b>$14,800 at 14.0% over 48 mo</b> costs about <span class="warn">$1,100 more in interest</span> than the same balance at <span class="good">6.4%</span>. Same car, same debt — cheaper money.</div>
+        <div class="cruled">
+          <div class="rh">We compared 3 routes for this debt</div>
+          <div class="rs">Why refinance won — and what we ruled out</div>
+          <div class="ri">
+            <span class="rx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+            <div><div class="rn">Wait for rates to drop</div><div class="rw">Every month at 14.0% costs ~$92 in avoidable interest. Waiting has a price tag.</div></div>
+          </div>
+          <div class="ri">
+            <span class="rx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+            <div><div class="rn">Pay it down aggressively first</div><div class="rw">That cash earns more killing your 27.4% store card. Wrong target.</div></div>
+          </div>
+        </div>
+        <div class="ccta">
+          <a class="clink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <div class="cctasub"><b>No credit impact.</b> Takes about 60 seconds. You see the rate before deciding anything.</div>
+          <div class="cghost">
+            <button class="cbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12v17l-6-4.5-6 4.5z"/></svg>Hold this offer</button>
+            <button class="cbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 1 1-3.2-6.4L21 4l-.9 3.4A8 8 0 0 1 21 12z"/><path d="M9 11h.01M12.5 11h.01M16 11h.01"/></svg>Ask a question</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C6 · offer card, lean -->
+    <div class="cell">
+      <div class="vh"><span class="vnum">C6</span><span class="vname">Offer card — lean</span></div>
+      <div class="adds">Same design language stripped to the decision: rate move, three numbers, Fit Score, CTA. For testing whether the diligence blocks earn their space at this type size.</div>
+      <div class="ccard">
+        <div class="cband jade">SmartMove 1<span class="bR">Available now</span></div>
+        <div class="chead">
+          <div class="ckick">Auto refinance</div>
+          <div class="cnm">Refinance the auto loan</div>
+          <div class="crate">
+            <span class="rfrom">14.0%</span>
+            <span class="rar">→</span>
+            <span class="rto">6.4%</span>
+            <span class="rlab">New rate</span>
+          </div>
+        </div>
+        <div class="cfields">
+          <div class="cfl"><span class="fk">New payment</span><span class="fv"><span class="was">$360/mo</span>$350/mo</span></div>
+          <div class="cfl"><span class="fk">Interest saved</span><span class="fv sev-jade">$1,100</span></div>
+          <div class="cfl"><span class="fk">Term</span><span class="fv">48 mo</span></div>
+        </div>
+        <div class="cfit"><span class="fnum">92</span><span class="ftx"><b>SmartFit Score</b>Fit against your profile, budget, and payoff goal.</span></div>
+        <div class="ccta">
+          <a class="clink" onclick="return false" href="#">See my real rate — soft check<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <div class="cctasub"><b>No credit impact.</b> Takes about 60 seconds.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footnote">Figures are illustrative for prototype review — same canonical dataset as the North Star build (Jordan R., seven tradelines, lowest-cost strategy). Severity palette matches the prototype's flag system (red = costing you, amber = could improve, blue = already fine); interest math derived from each account's line (Visa $9,400 · 24.9% · $280/mo; Auto $14,800 · 14.0% · $360/mo; Student $8,200 · 5.8% · $95/mo). Rates, terms, forecasts, and disclosure copy pending compliance review.</div>
+
+<script>
+/* second debt-card set with no selector box: clone the section BEFORE selection chrome is injected */
+(function(){
+  const src=document.getElementById('debtsect');
+  const plain=src.cloneNode(true);
+  plain.id='debtsect-plain';
+  plain.querySelector('.sh h2').textContent='Debt card — no selector box';
+  plain.querySelector('.note').innerHTML='Same six density steps with the selection chrome removed — the card content stands on its own.';
+  src.after(plain);
+})();
+
+/* selection chrome: inject an include checkbox on every debt card + a select-all controller per variation (selectable set only) */
+function swSync(box){
+  const sws=[...box.querySelectorAll('.acct-sw')];
+  const n=sws.filter(s=>s.classList.contains('on')).length;
+  const all=box.querySelector('.all-sw');
+  if(all){
+    all.classList.toggle('on', n===sws.length);
+    all.classList.toggle('some', n>0 && n<sws.length);
+  }
+  const c=box.querySelector('.selcount');
+  if(c) c.textContent=n+' of '+sws.length+' selected';
+}
+function swTog(sw){
+  sw.classList.toggle('on');
+  const card=sw.closest('.tl,.tlx');
+  if(card) card.classList.toggle('picked', sw.classList.contains('on'));
+  swSync(sw.closest('.stagebox'));
+}
+function swAll(sw){
+  const box=sw.closest('.stagebox');
+  const on=!sw.classList.contains('on');
+  box.querySelectorAll('.acct-sw').forEach(s=>{
+    s.classList.toggle('on',on);
+    const card=s.closest('.tl,.tlx');
+    if(card) card.classList.toggle('picked',on);
+  });
+  swSync(box);
+}
+document.querySelectorAll('#debtsect .stagebox').forEach(box=>{
+  const cards=box.querySelectorAll('.tl,.tlx');
+  const selrow=document.createElement('div');
+  selrow.className='selrow';
+  selrow.innerHTML='<span class="cbx all-sw" onclick="swAll(this)">'
+    +'<svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+    +'<svg class="dd" viewBox="0 0 24 24"><path d="M6 12h12"/></svg>'
+    +'</span><span class="sl">Select all</span><span class="selcount">0 of '+cards.length+' selected</span>';
+  box.prepend(selrow);
+  cards.forEach(c=>{
+    const sw=document.createElement('span');
+    sw.className='cbx acct-sw';
+    sw.setAttribute('onclick','swTog(this)');
+    sw.innerHTML='<svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+    (c.querySelector('.toprow')||c).appendChild(sw);
+  });
+});
+</script>
+</body>
+</html>
